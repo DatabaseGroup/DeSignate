@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- header with special colorization -->
+  <td style="width: 33%">
+    <img src="{% static "icons/file_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/group_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/results_active.png" %}" class="headerIcon"></img>
+  </td>
+  <td style="width: 33%">
+    <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+    <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+  </td>
+  </table>
+  <span class="headerLine"></span>
+</div>
+<!-- header end --->
+<div class="box">
+  <div>
+  </div>
+</div>
+{% endblock %}

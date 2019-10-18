@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- header with special colorization -->
+      <td style="width: 33%">
+        <img src="{% static "icons/file_active.png" %}" class="headerIcon"></img>
+        <img src="{% static "icons/group_active.png" %}" class="headerIcon"></img>
+        <img src="{% static "icons/results_active.png" %}" class="headerIcon"></img>
+      </td>
+      <td style="width: 33%">
+        <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+        <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+      </td>
+    </table>
+    <span class="headerLine"></span>
+  </div>
+  <!-- header end --->
+
+
+<div class="box" style="text-align: center; overflow: hidden; padding: 10px 0px 10px 0px;">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <button id="nextButton" type="submit" target="_blank" style="border-color: black; color: black">Get started!</button>
+  </form>
+
+  <div style="margin-left: 20vw; margin-right: 20vw; text-align: left; margin-top: 20px">
+    <table style="table-layout: fixed; ">
+      <tr>
+        <td style="border-bottom: 1px solid grey; font-size: 18px;width: 1px;">
+          <h3>Detecting Signature Nucleotides for Taxon Diagnoses</h3>
+          <p style="margin-bottom: 40px;">
+            DeSigNate is an innovative tool for detecting diagnostic nucleotide positions for taxon diagnoses. The analysis is based on a novel representation of the gene sequence data, which enables a ranking of all positions according to their diagnostic relevance and a classification of the nucleotides. DeSigNate is also able to detect diagnostic combinations of nucleotides. The tool guides the user step-by-step through the analysis and presents the results without need to post-process the output data.
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="font-size: 18px;width: 1px;">
+          <h3 style="margin-top: 40px">Which nucleotides are suitable for taxon diagnoses?</h3>
+          <p>
+            In taxon diagnoses, only nucleotides that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature nucleotides are distinguished: (1) at binary positions the nucleotides of the reference group are uniform but different from the nucleotide in the query group; (2) at asymmetric positions the nucleotides of the reference group are not uniform but different from the nucleotide in the query group.
+          </p>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+  <!--
+  <table class="homeOverviewTable">
+    <tr>
+      <th>
+          <img src="{% static "icons/file_active.png" %}" class="headerIcon" style="vertical-align: middle"></img>
+          <a class="fileInput" style="margin-left: 10px;">User Input</a>
+      </th>
+      <th>
+        <img src="{% static "icons/group_active.png" %}" class="headerIcon" style="vertical-align: middle"></img>
+        <a class="groupSelection" style="margin-left: 10px;">Group Selection</a>
+      </th>
+      <th style="border-right: 0">
+        <img src="{% static "icons/results_active.png" %}" class="headerIcon" style="vertical-align: middle"></img>
+        <a class="results" style="margin-left: 10px;">Results</a>
+      </th>
+    </tr>
+    <tr>
+      <td>
+        <ul style="margin-top: 0px">
+          <li class="fileInput">
+            Upload a sequence alignment in fasta format.
+          </li>
+          <div style="font-style: italic">
+            Example: alignment.fasta
+          </div>
+          <div class="homeText" style="margin-left: 20px; font-family: Lucida Console,Lucida Sans Typewriter,monaco,Bitstream Vera Sans Mono,monospace;">
+            >Taxon 1<br>
+            acgtgcgtacaccacgactagct<br>
+            >Taxon 2<br>
+            aggcggctcgtgcttcgatatat<br>
+            >Taxon 3<br>
+            agttgattgtatcggatatacgt<br>
+            ...
+          </div>
+
+
+          <li class="fileInput">
+            Upload an according phylogenetic tree in Newick format.
+          </li>
+          <div style="font-style: italic">
+            Example: tree.newick
+          </div>
+          <div class="homeText" style="margin-left: 20px; font-family: Lucida Console,Lucida Sans Typewriter,monaco,Bitstream Vera Sans Mono,monospace;">
+            (((((<div style="display: inline-block">Taxon 1:0.2</div>, <div style="display: inline-block">Taxon 2:0.2)</div>:0.4, <div style="display: inline-block">Taxon 3:0.4)</div>:0.6, ...);
+          </div>
+
+          <li class="fileInput">
+            Specify search parameters.
+          </li>
+          <div style="font-style: italic">
+            Example: k-window
+          </div>
+          <div style="margin-left: 20px">
+            A k-window larger than 1 enables the analysis of combined nucleotides. Hence, noisy candidate nucleotides within a range of k positions may be combined to asymmetric signature nucleotides.
+          <div>
+        </ul>
+      </td>
+      <td>
+        <ul style="margin-top: 0px">
+          <li class="groupSelection">
+            Specify a query and reference group.
+          </li>
+          <div class="homeText">
+            Right-click on a node in the input phylogenetic tree to select the query group <div style="display: inline-block">(<a class="circle" style="background-color: #607892; margin-top: 0px;"></a>).</div>
+          </div>
+          <div class="homeText">
+            Left-click on a node in the input phylogenetic tree to select the reference group <div style="display: inline-block">(<a class="circle" style="background-color: #e9544d; margin-top: 0px;"></a>).</div>
+          </div>
+          <center><img src="{% static 'example_tree.png'%}" style="margin-left: -14%; width: 70%;height: 70%;object-fit: contain; "></img></center>
+        </ul>
+      </td>
+
+      <td style="border-right: 0">
+        <div class="homeText" style="margin-left: 25px">
+          DeSigNate presents the experimental results without post-processing of the data. The output shows:
+        </div>
+        <ul>
+          <li class="results">
+            Signature Bar:
+          </li>
+          <div class="homeText">
+            Gives an overview of all candidate nucleotides and the respective alignment positions.
+          </div>
+
+          <li class="results">
+            Entropy Plot:
+          </li>
+          <div class="homeText">
+            A figure that shows the entropy and the moving average of the input alignment. The plot helps to identify the variable regions of the alignment.
+          </div>
+
+          <li class="results">
+            Group Alignment:
+          </li>
+          <div class="homeText">
+            Shows the alignment of the selected query and reference groups with color-coded candidate nucleotides.
+          </div>
+
+          <li class="results">
+            Diagnostic Relevance Ranking:
+          </li>
+          <div class="homeText">
+            All positions are ranked according to their discriminative power (descending), query rank (ascending), and reference rank (ascending). Hence, the most relevant positions are listed first. Further, candidate nucleotides are highlithed with colors.
+          </div>
+        </ul>
+      </td>
+    </tr>
+  </table>
+-->
+</div>
+{% endblock %}

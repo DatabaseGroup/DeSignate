@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- header with special colorization -->
+  <td style="width: 33%">
+    <img src="{% static "icons/file_inactive.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/group_inactive.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/results_active.png" %}" class="headerIcon"></img>
+  </td>
+  <td style="width: 33%">
+    <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+    <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+  </td>
+  </table>
+  <span class="headerLine"></span>
+  <table style="table-layout: fixed; text-align: center">
+    <td style="width: 33.3%; text-align: left"><a class="results" style="margin-left: 0px;">Nucleotide Classification</a><div class="toolTip">?<span class="toolTip" style="top: -4px; min-width: 600px;">Nucleotides that are uniform at homologous alignment positions in the query group are considered. Two types of signature nucleotides are distinguished: (1) at binary positions, the nucleotides of the reference group are uniform but different from the nucleotide in the query group; (2) at asymmetric positions (individual and combined), the nucleotides of the reference group are not uniform but different from the nucleotide in the query group. Noisy positions are characterized by at least one nucleotide in the reference group identical to the nucleotide in the query group.</span></div></td>
+    <td style="width: 33.3%">
+      <a style="font-variant: small-caps; color: #b2597c; font-size: 20px"><b>Results</b></a>
+    </td>
+    <td style="width: 33.3%">
+      {% if ids %}
+        <a class="functionButton" href="{% url 'download_zip' %}"> &#128190; Download Results</a>
+      {% endif %}
+      <a href="{% url 'home' %}" class="functionButton">&#8635; Restart Analysis</a>
+    </td>
+  </table>
+</div>
+<!-- header end --->
+
+<!-- js content -->
+<script>
+  // save python variables globally to access them in .js file
+  // and  to minimalize load at server
+
+  // get list of binary, asym. and noisy indexes (see views.py for structure)
+  var diversity_list = {{ diversity_list }};
+
+  // get list of entropy
+  var entropy_list = {{ entropy_list }};
+
+  // get list of average entropy
+  var average_list = {{ average_list }};
+
+  // get sizes of alignments
+  var alignment_reference_length = {{ alignment_reference|length }};
+  var alignment_query_length = {{ alignment_query|length }};
+
+  // get list of binary nucleotides for signaturebar index markers
+  var nucleotide_list = {{ nucleotide_list|safe }};
+
+  // construct list of indexes
+  var index_list = [];
+  for (var i = 1; i <= entropy_list.length; i++) {
+     index_list.push(i);
+  }
+
+  // global variable where 1st position is binary, 2nd asymmetric, 3rd noisy
+  var filters = [false, false, false];
+
+  // colors for binary, asymmetric and noisy markers
+  var bin_color = "#2ad21b";
+  var asym_color = "#ff9933";
+  var noisy_color = "#c2cad0";
+
+</script>
+
+<!-- beginning of main page -->
+<div id="box" class="box">
+
+  <!-- error message if somethings wrong -->
+  {% if error_message %}
+    <p style="color: red">{{error_message}}</p>
+  {% endif %}
+
+  {% if error_message == None %}
+    <div style="display: block; margin-left: 10px">
+      <a style="margin-left: 20px; color: #2ad21b;">Binary: {{ diversity_list.0|length }}</a>
+      <a style="margin-left: 20px; color: #ff9933;">Asymmetric: {{ diversity_list.1|length }}</a>
+      {% if k_window != "1" %}
+        <a style="margin-left: 20px; color: #ff9933;">Combined Asymmetric: {{ combined_asymmetric }}</a>
+      {% endif %}
+      <a style="margin-left: 20px; color: #a2a8ad;">Noisy: {{ diversity_list.2|length }}</a>
+    </div>
+    <div style="display: block">
+      <a class="results" style="margin-left: 0px;">Signature Bar</a><div class="toolTip">?<span class="toolTip">The signature bar displays the alignment positions of binary, asymmetric, and noisy nucleotides by color-coded bars and arrowheads. Mouse-over the arrowheads shows the nucleotide position and the uniform nucleotide of the query group.</span></div>
+      <div style="float: right">
+        <a>Filter:</a>
+        <div id="filter0" onclick="filter('binary', diversity_list)" type="button" class="filterButton"><a style="color: #2ad21b; margin-left: 8px">&#x25be; Binary</a></div></s>
+        <div id="filter1" onclick="filter('asymmetric', diversity_list)" type="button" class="filterButton"><a style="color: #ff9933; margin-left: 8px">&#x25be; Asymmetric</a></div>
+        <div id="filter2" onclick="filter('noisy', diversity_list)" type="button" class="filterButton"><a style="color: #a2a8ad; margin-left: 8px">&#x25be; Noisy</a></div>
+      </div>
+    </div>
+    <div id="bar-graph" style="display:block">
+      <div id="signaturebar" class="signaturebar"></div>
+    </div>
+    <div id="divgraph" style="margin-top: 55px;display:block;">
+      <a class="results" style="margin-left: 0px;">Entropy Plot</a><div class="toolTip">?<span class="toolTip">The entropy is calculated based on the alignment. For the calculation of the moving average, a range of x positions is used. The y-axis is the Shannon entropy value and the x-axis is the alignment position (starting at 1).</span></div>
+      <div style="float: right">
+        <a>Filter:</a>
+        <div id="filter0_chartjs" onclick="filter_chartjs(0)" type="button" class="filterButton"><a style="color: black; margin-left: 8px">&horbar; Moving Average</a></div></s>
+        <div id="filter1_chartjs" onclick="filter_chartjs(1)" type="button" class="filterButton"><a style="color: #1e90ff; margin-left: 8px">&horbar; Entropy</a></div>
+      </div>
+      <canvas id="graph"></canvas>
+    </div>
+
+    <!-- alignment tables -->
+    <!-- names -->
+    <div style="display: flex; overflow-x: hidden; flex-basis: 90%; max-height: 50vh">
+      <div style="position: absolute">
+        <a class="results">Groups</a><div class="toolTip">?<span class="toolTip">Header list of taxa selected for the query and reference groups (numbers of sequences in brackets).</span></div>
+      </div>
+      <div id="bothNameTables" class="bothNameTables">
+        <table class="nameTable">
+          <tr>
+            <th class="nameTable">Query Group ({{ alignment_query|length }})</th>
+          </tr>
+          {% for obj in alignment_query %}
+            <tr>
+              <td class="nameTable">{{obj.name}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+
+        <table class="nameTable">
+          <tr>
+            <th class="nameTable">Reference Group ({{ alignment_reference|length }})</th>
+          </tr>
+          {% for obj in alignment_reference %}
+            <tr>
+              <td class="nameTable">{{obj.name}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <!-- alignments -->
+      <div style="display: flex; border-collapse: collapse; flex-basis: 80%; max-width: 90%; min-width: 20%;max-height: 50vh;">
+        <div style="position: absolute">
+          <a class="results">Alignment</a><div class="toolTip">?<span class="toolTip">Aligned sequences of the query and reference groups. Signature and noisy nucleotides are color-coded (green: binary, orange: asymmetric, grey: noisy).</span></div>
+        </div>
+        <div id="bothAlignmentTables" class="bothAlignmentTables">
+          <table class="alignmentTable" style="margin-top: 10px">
+            <tr>
+              <th id="0B">.</th>
+              </tr>
+              {% for obj in alignment_query %}
+                <tr>
+                  <td id="{{ forloop.counter }}B" class ="alignmentTable">{{ obj.seq }}</td>
+                </tr>
+              {% endfor %}
+          </table>
+
+          <table class="alignmentTable">
+            <tr>
+              <th id="0A"></th>
+            </tr>
+            {% for obj in alignment_reference %}
+              <tr>
+                <td id="{{ forloop.counter }}A" class="alignmentTable">{{ obj.seq }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <div style="display: flex; max-height: 50vh;top: 100px; min-height: 10px;">
+        <div style="position: absolute; margin-left: 10px">
+          <a class="results">Diagnostic Relevance Ranking</a><div class="toolTipLeft">?<span class="toolTipLeft">Ranking of alignment positions based on discriminative power, query rank, and reference rank. Positions relevant for taxon diagnoses are listed first (green: binary, uniform nucleotides in brackets; orange: asymmetric, uniform nucleotide for the query rank and most frequent nucleotide for the reference rank in brackets).</span></div>
+        </div>
+        <div class="rankingTable">
+          <div style="padding: 10px">
+            <table cellspacing="0" class="rankingTable">
+             <thead>
+               <tr>
+                 <th>Position</th>
+                 <th>d-power</th>
+                 <th>q-rank</th>
+                 <th>r-rank</th>
+               </tr>
+             </thead>
+             <tbody>
+                {% for obj in ranking %}
+                  <tr>
+                    {% if obj.4 == 'binary' %}
+                      <td  class="rankBinary">{{ obj.0 }}</td>
+                      <td  class="rankBinary">{{ obj.1|floatformat:2 }}</td>
+                      <td  class="rankBinary">{{ obj.2 }}</td>
+                      <td  class="rankBinary">{{ obj.3 }}</td>
+                    {% elif obj.4 == 'asymmetric' %}
+                      <td  class="rankAsymmetric">{{ obj.0 }}</td>
+                      <td  class="rankAsymmetric">{{ obj.1|floatformat:2 }}</td>
+                      <td  class="rankAsymmetric">{{ obj.2 }}</td>
+                      <td  class="rankAsymmetric">{{ obj.3 }}</td>
+                    {% elif obj.4 == 'noisy' %}
+                      <td  class="rankNoisy">{{ obj.0 }}</td>
+                      <td  class="rankNoisy">{{ obj.1|floatformat:2 }}</td>
+                      <td  class="rankNoisy">{{ obj.2 }}</td>
+                      <td  class="rankNoisy">{{ obj.3 }}</td>
+                    {% else %}
+                      <td >{{ obj.0 }}</td>
+                      <td >{{ obj.1|floatformat:2 }}</td>
+                      <td >{{ obj.2 }}</td>
+                      <td >{{ obj.3 }}</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+             </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script src="{% static 'results.js' %}"></script>
+
+{% endblock %}

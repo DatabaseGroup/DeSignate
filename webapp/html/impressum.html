@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- header with special colorization -->
+  <td style="width: 33%">
+    <img src="{% static "icons/file_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/group_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/results_active.png" %}" class="headerIcon"></img>
+  </td>
+  <td style="width: 33%">
+    <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+    <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+  </td>
+  </table>
+  <span class="headerLine"></span>
+</div>
+<!-- header end --->
+<div class="box">
+  <div style="margin-left: 10px">
+    <h2>Impressum</h2>
+    <div style="margin-left: 10px">
+      <p>
+        Medieninhaberin, Herausgeberin, inhaltliche und redaktionelle Verantwortung für die Seiten mit der
+        Domain <a href="https://uni-salzburg.at/index.php?id=52&L=2">www.uni-salzburg.at</a> der ersten, zweiten und dritten Ebene:
+      </p>
+      <p style="font-weight: bold">
+        Paris-Lodron-Universität Salzburg<br>
+        Kapitelgasse 4<br>
+        A-5020 Salzburg<br>
+        Österreich<br>
+        Telefon: +43 (0) 662-8044-0<br>
+        Fax: +43 (0) 662-8044-145<br>
+        E-Mail: studium(at)sbg.ac.at und<br>
+        Vorname.Nachname(at)sbg.ac.at
+      </p>
+      <h3>Vertreten durch das Rektorat der Universität Salzburg:</h3>
+      Rektor Univ.-Prof. Dr. Hendrik Lehnert
+
+      <h3>Umsatzsteuer-Identifikationsnummer</h3> (UID) der Universität Salzburg:
+      ATU 57532824
+
+      <h3>Grafische Konzeption und Design</h3>
+      Thomas Hütter<br>
+      Manuel Kocher<br>
+      Maximilian Ganser
+
+      <h3>Technische Umsetzung:</h3>
+      Universität Salzburg<br>
+      Datenbase Research Group<br>
+      System Administrator: Alfred Egger (aegger(at)cosy.sbg.ac.at )<br>
+
+      <h3>Aufsichtsbehörde</h3> der Universität Salzburg:
+      Bundesministerium für Wissenschaft, Forschung und Wirtschaft
+
+      <h3>Urheberrecht:</h3>
+      Die Inhalte sind im World-Wide-Web für den Online-Zugriff veröffentlicht. Das Urheberrecht und
+      die Nutzungsrechte für Texte, Graphiken, Design, Quellcode und Bildmaterial – sofern nicht im
+      Metatext des Bildes (Rolloverfunktion) mit der Kennung zum Beispiel „© Name bzw.
+      Künstlername des Fotografen/der Fotografin / Fotolia.com" oder „© Name bzw. Künstlername des
+      Fotografen/der Fotografin / Pixelio.de“ gekennzeichnet – liegen bei der Universität Salzburg.<br>
+      Die Erstellung, die Verwendung und die nicht kommerzielle Weitergabe von Kopien in
+      elektronischer oder ausgedruckter Form sind erlaubt, wenn der Inhalt unverändert bleibt und die
+      Quelle angeben wird (Quelle: Universität Salzburg).<br>
+      Die inhaltliche, textliche Betreuung der Seite www.uni-salzburg.at obliegt dem BdR Büro für Public
+      Relation & Kommunikation. Die technische Betreuung des WWW-Servers www.uni-salzburg.at
+      erfolgt durch die IT-Services der Universität Salzburg.<br>
+      Grafisches Konzept, Informationsstruktur und die technische Realisierung sind Eigenentwicklungen
+      der Universität Salzburg, BdR Büro für Public Relation & Kommunikation sowie der Abteilung ITS
+      auf Basis von Typo3. Die Informationen der einzelnen Institute und sonstigen Einrichtungen der
+      Universität Salzburg sowie der anderen InformationsanbieterInnen werden von diesen
+      eigenverantwortlich erarbeitet und in das System eingebracht.
+
+      <h3>Subdomain:</h3>
+      Organisationseinheiten und akademische Einheiten laut Organisationsplan können eigene Subdomains der URL <a href="https://uni-salzburg.at/index.php?id=52">www.uni-salzburg.at</a> betreiben, für deren Inhalt sie auch verantwortlich sind.
+      Anfragen sind daher direkt an den Webmaster / Webmistress der jeweiligen Einheit zu richten.
+
+      <h3>Haftung:</h3>
+      Die Texte auf der Homepage wurden vor der Veröffentlichung einer sorgfältigen Prüfung
+      unterzogen. Dessen ungeachtet kann keine Garantie für die Richtigkeit, Vollständigkeit und
+      Aktualität der Angaben übernommen werden. Eine Haftung der Universität Salzburg wird daher
+      ausgeschlossen. Die Links zu anderen Seiten wurden gewissenhaft ausgewählt.<br>
+      Da die Universität Salzburg auf deren Inhalte keinen Einfluss hat, übernimmt die Universität
+      Salzburg dafür auch keine Verantwortung. Weder die IT-Services noch die Universität Salzburg
+      können für fehlende oder irrtümliche Informationen haftbar gemacht werden. Irrtümer vorbehalten.
+
+      <h3>Aufgaben der Paris-Lodron-Universität Salzburg:</h3>
+      Gemäß § 3 Universitätsgesetz 2002 erfüllt die Universität Salzburg im Rahmen ihres
+      Wirkungsbereichs folgende Aufgaben:<br><br>
+      <div style="margin-left: 10px">
+      Entwicklung der Wissenschaften (Forschung und Lehre), Entwicklung und Erschließung der Kunst
+      sowie Lehre der Kunst.<br><br>
+      Bildung durch Wissenschaft und durch die Entwicklung und Erschließung der Künste<br><br>
+      wissenschaftliche, künstlerische, künstlerisch-pädagogische und künstlerisch-wissenschaftliche
+      Berufsvorbildung, Qualifizierung für berufliche Tätigkeiten, die eine Anwendung
+      wissenschaftlicher Erkenntnisse und Methoden erfordern, sowie Ausbildung der künstlerischen und
+      wissenschaftlichen Fähigkeiten bis zur höchsten Stufe.<br><br>
+      Heranbildung und Förderung des wissenschaftlichen und künstlerischen Nachwuchses<br><br>
+      Weiterbildung, insbesondere der Absolventinnen und Absolventen von Universitäten<br><br>
+      Koordinierung der wissenschaftlichen Forschung (Entwicklung und Erschließung der Künste) und
+      der Lehre innerhalb der Universität.<br><br>
+      Unterstützung der nationalen und internationalen Zusammenarbeit im Bereich der
+      wissenschaftlichen Forschung und Lehre sowie der Kunst.<br><br>
+      Unterstützung der Nutzung und Umsetzung ihrer Forschungsergebnisse in der Praxis und
+      Unterstützung der gesellschaftlichen Einbindung von Ergebnissen der Entwicklung und
+      Erschließung der Künste.<br><br>
+      Gleichstellung von Frauen und Männern und Frauenförderung.<br><br>
+      Pflege der Kontakte zu den Absolventinnen und Absolventen.<br><br>
+      Information der Öffentlichkeit über die Erfüllung der Aufgaben der Universitäten.
+      </div>
+      <h3>Datenschutzrechtlicher Hinweis betreffend Google Analytics</h3>
+      Die Domain benutzt Google Analytics, einen Webanalysedienst der Google Inc. („Google“) Google
+      Analytics verwendet sog. „Cookies“, Textdateien, die auf Ihrem Computer gespeichert werden unddie eine Analyse der Benutzung der Website durch Sie ermöglicht. Die durch den Cookie erzeugten
+      Informationen über Ihre Benutzung diese Website (einschließlich Ihrer IP-Adresse) wird an einen
+      Server von Google in den USA übertragen und dort gespeichert. Google wird diese Informationen
+      benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten für
+      die Websitebetreiber zusammenzustellen und um weitere mit der Websitenutzung und der
+      Internetnutzung verbundene Dienstleistungen zu erbringen. Auch wird Google diese Informationen
+      gegebenenfalls an Dritte übertragen, sofern dies gesetzlich vorgeschrieben oder soweit Dritte diese
+      Daten im Auftrag von Google verarbeiten. Google wird in keinem Fall Ihre IP-Adresse mit anderen
+      Daten der Google in Verbindung bringen. Sie können die Installation der Cookies durch eine
+      entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin,
+      dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich
+      nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über
+      Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor
+      benannten Zweck einverstanden. (Beispieltext in den Nutzungsbedingungen von Google Analytics)
+
+      <h3>Datenschutzrechtlicher Hinweis betreffend Google reCaptcha</h3>
+      Wir nutzen “Google reCAPTCHA” (im Folgenden “reCAPTCHA”) auf unserer Website. Anbieter
+      ist die Google Inc., 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA (“Google”).
+      Mit reCAPTCHA soll überprüft werden, ob die Dateneingabe auf unserer Website (z.B. das
+      Hochladen der Alignment- und Baumdaten) durch einen Menschen oder durch ein automatisiertes
+      Programm erfolgt. Hierzu analysiert reCAPTCHA das Verhalten des Websitebesuchers anhand
+      verschiedener Merkmale. Diese Analyse beginnt automatisch, sobald der Websitebesucher die
+      Website betritt. Zur Analyse wertet reCAPTCHA verschiedene Informationen aus (z.B. IP-Adresse,
+      Verweildauer des Websitebesuchers auf der Website oder vom Nutzer getätigte Mausbewegungen).
+      Die bei der Analyse erfassten Daten werden an Google weitergeleitet.
+      Die reCAPTCHA-Analysen laufen vollständig im Hintergrund. Websitebesucher werden nicht
+      darauf hingewiesen, dass eine Analyse stattfindet.
+      Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber
+      hat ein berechtigtes Interesse daran, seine Webangebote vor missbräuchlicher automatisierter
+      Ausspähung und vor SPAM zu schützen.
+      Weitere Informationen zu Google reCAPTCHA sowie die Datenschutzerklärung von Google
+      entnehmen Sie folgenden Links: <a href="https://www.google.com/intl/de/policies/privacy/">https://www.google.com/intl/de/policies/privacy/</a> und <a href="https://www.google.com/recaptcha/intro/android.html">https://
+      www.google.com/recaptcha/intro/android.html</a>.
+    </div>
+  </div>
+</div>
+{% endblock %}

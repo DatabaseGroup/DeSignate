@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- header with special colorization -->
+  <td style="width: 33%">
+    <img src="{% static "icons/file_inactive.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/group_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/results_inactive.png" %}" class="headerIcon"></img>
+  </td>
+  <td style="width: 33%">
+    <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+    <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+  </td>
+  </table>
+  <span class="headerLine"></span>
+  <table style="table-layout: fixed; text-align: center; vertical-align: top">
+    <td style="width: 33.3%"></td>
+    <td style="width: 33.3%; vertical-align: top;">
+      <a style="font-variant: small-caps; color: #AA8175; font-size: 20px"><b>Group Selection</b></a>
+    </td>
+    <td style="width: 33.3%">
+      <form method="POST" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <input id="hidden" name="hiddenElement" type="hidden"></input>
+        <input id="nextButton" name="nextButton" type="submit" onclick="getSelectedNodes();" value="Next" target="_blank" style="border-color: #AA8175;color: #AA8175;"></input>
+      </form>
+    </td>
+  </table>
+</div>
+<!-- header end --->
+
+<div class="box">
+  <div class="groupSelection">
+    <p style="margin: 0; padding:0"><b>Specify your query- and reference group:</b></p>
+  </div>
+
+
+  <p style="color: red">{{error_message}}</p>
+  <table>
+    <tr>
+      <td>
+        <a class="circle" style="background-color: #e9544d; margin-left: 50px"></a>
+        Reference group (left click)
+        <div class="toolTip">
+          ?<span class="toolTip">Left click on a tree node to specify the reference group (red).</span>
+        </div>
+        <a class="circle" style="background-color: #5a78d3; margin-left: 50px;"></a>
+        Query group (right click)
+        <div class="toolTip">
+          ?<span class="toolTip">Right click on a tree node to specify the query group/taxon (blue).<br>The query group may be selected within the reference group.</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div id="chart" class="tree" oncontextmenu="return false;"></div>
+</div>
+
+<script type="text/javascript">
+  function draw_phylo(d) {
+    return "M" + d.source.y + "," + d.source.x
+    + "L" + d.source.y + "," + d.target.x
+    + "L" + d.target.y + "," + d.target.x;
+  }
+
+  // code by Jackson Henry, 2018
+  // http://bl.ocks.org/jacksonhenry3/3083726, no license
+  // changed for our needs
+
+  var w = {{ depth }} * 50 + 500,
+  h = {{ numLeafs }} * 12 + 400,
+  i = 0, // positive counter for inner nodes
+  j = -1, // negative counter for leaf nodes
+  duration = 700,
+  root;
+
+  count = 0; // counter for function click
+  cnt = 0; // counter for function rightclick
+
+  // array for selected tree nodes
+  // [0] is reference group, [1] is query group
+  var selected = new Array();
+  selected[0] = null;
+  selected[1] = null;
+
+  // [0] is reference group, [1] is query group
+  var id = new Array();
+  id[0] = null;
+  id[1] = null;
+
+  var tree = d3.layout.tree().size([h, w - 160]);
+
+  var diagonal = d3.svg.diagonal()
+  .projection(function(d) { return [d.y, d.x]; });
+
+  var vis = d3.select("#chart").append("svg:svg")
+  .attr("width", w)
+  .attr("height", h)
+  .append("svg:g")
+  .attr("transform", "translate(40,0)");
+
+  // parser by Jason Davies, 2010
+  // https://github.com/jasondavies/newick.js/blob/master/src/newick.js
+  /**
+   * Newick format parser in JavaScript.
+   *
+   * Copyright (c) Jason Davies 2010.
+   *
+   * Permission is hereby granted, free of charge, to any person obtaining a copy
+   * of this software and associated documentation files (the "Software"), to deal
+   * in the Software without restriction, including without limitation the rights
+   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   * copies of the Software, and to permit persons to whom the Software is
+   * furnished to do so, subject to the following conditions:
+   *
+   * The above copyright notice and this permission notice shall be included in
+   * all copies or substantial portions of the Software.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   * THE SOFTWARE.
+   *
+   * Example tree (from http://en.wikipedia.org/wiki/Newick_format):
+   *
+   * +--0.1--A
+   * F-----0.2-----B            +-------0.3----C
+   * +------------------0.5-----E
+   *                            +---------0.4------D
+   *
+   * Newick format:
+   * (A:0.1,B:0.2,(C:0.3,D:0.4)E:0.5)F;
+   *
+   * Converted to JSON:
+   * {
+   *   name: "F",
+   *   branchset: [
+   *     {name: "A", length: 0.1},
+   *     {name: "B", length: 0.2},
+   *     {
+   *       name: "E",
+   *       length: 0.5,
+   *       branchset: [
+   *         {name: "C", length: 0.3},
+   *         {name: "D", length: 0.4}
+   *       ]
+   *     }
+   *   ]
+   * }
+   *
+   * Converted to JSON, but with no names or lengths:
+   * {
+   *   branchset: [
+   *     {}, {}, {
+   *       branchset: [{}, {}]
+   *     }
+   *   ]
+   * }
+   */
+  var parser= function(s) {
+    var ancestors = [];
+    var tree = {};
+    var tokens = s.split(/\s*(;|\(|\)|,|:)\s*/);
+    for (var i=0; i<tokens.length; i++) {
+      var token = tokens[i];
+      switch (token) {
+        case '(': // new branchset
+          var subtree = {};
+          tree.children = [subtree];
+          ancestors.push(tree);
+          tree = subtree;
+          break;
+        case ',': // another branch
+          var subtree = {};
+          ancestors[ancestors.length-1].children.push(subtree);
+          tree = subtree;
+          break;
+        case ')': // optional name next
+          tree = ancestors.pop();
+          break;
+        case ':': // optional length next
+          break;
+        default:
+          var x = tokens[i-1];
+          if (x == ')' || x == '(' || x == ',') {
+            tree.name = token;
+          } else if (x == ':') {
+            tree.length = parseFloat(token);
+          }
+      }
+    }
+    return tree;
+  };
+
+  var newick_tree = parser("{{ newickTree }}");
+
+  max_depth = 0;
+  num_leafs = 0;
+
+  root = newick_tree;
+  update(root);
+  transitionLeafs(root);
+
+  function update(source) {
+
+    // Compute the new tree layout.
+    var nodes = tree.nodes(root);
+
+    // return unique ids for every node
+    var node = vis.selectAll("g.node")
+      .data(nodes, function(d) {
+        // if name of node is number (inner node) or empty, then return an id.
+        // terminal nodes get j
+        return ((/^([0-9])/.test(d.name[0]) || d.name == "") ? (d.id = i++) : d.id = j--);
+      });
+
+
+    var nodeEnter = node.enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) {
+        return "translate(" + source.y0 + "," + source.x0 + ")";
+      });
+
+    // Enter any new nodes at the parent's previous position.
+    nodeEnter.append("svg:circle")
+      .attr("r", 4.5)
+      .attr("id", function(d) { return d.id}) // set id of the circle to d.id, to access it later on
+      .style("fill", function(d) { return "#ffffff"; })
+      .on("click", click)
+      .on("contextmenu", rightclick);
+
+    nodeEnter.append("svg:text")
+        .attr("x", function(d) { return d._children ? -8 : 8; })
+        .attr("y", 3)
+        .text(function(d) {
+          return ((d.id >= 0) ? d.id : "") + " " + (/^([0-9])/.test(d.name[0]) ? "" : d.name)
+        });
+
+    // Transition nodes to their new position.
+    nodeEnter.transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+        .style("opacity", 1)
+        .select("circle")
+        .style("fill", "#ffffff");
+
+    node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .style("opacity", 1);
+
+
+    node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .style("opacity", 1e-6)
+      .remove();
+
+    // Update the links…
+    var link = vis.selectAll("path.link")
+      .data(tree.links(nodes), function(d) { return d.target.id; });
+
+    // Enter any new links at the parent's previous position.
+    link.enter().insert("svg:path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return draw_phylo({source: o, target: o});
+      })
+    .transition()
+      .duration(duration)
+      .attr("d", draw_phylo);
+
+    // Transition links to their new position.
+    link.transition()
+      .duration(duration)
+      .attr("d", draw_phylo);
+
+    // Transition exiting nodes to the parent's new position.
+    link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return draw_phylo({source: o, target: o});
+      })
+      .remove();
+
+    // Stash the old positions for transition.
+    nodes.forEach(function(d) {
+      d.x0 = d.x;
+      d.y0 = d.y;
+      if(d.id < 0) {
+        num_leafs++;
+      }
+      if(d.depth > max_depth) {
+        max_depth = d.depth;
+      }
+    });
+  }
+
+  function transitionLeafs(root) {
+    var nodes = tree.nodes(root);
+    var ratio_x = h / num_leafs;
+    var ratio_y = 50;
+    var x = 10;
+    var checked = [];
+    nodes.forEach(function(d) {
+      if(d.id < 0) {
+        // cause coordinate system is rotated for some reason
+        d.y = w - 500;
+        d.y0 = w - 500;
+        d.x = x;
+        d.x0 = x;
+        x = x + ratio_x;
+        checked.push(d);
+      }
+    });
+
+    saved = checked.slice(0);
+    latest_parents = checked.slice(0);
+    while(checked.length != 0) {
+      checked = [];
+      latest_parents.forEach(function(d) {
+        var parent = d.parent;
+        if(parent != null && typeof parent != "undefined" && checked.includes(parent) == false)  {
+          for(var i = 0; i < parent.children.length; i++) {
+            if(saved.includes(parent.children[i]) == false) {
+              return;
+            }
+          }
+          checked.push(parent);
+          parent.x = (parent.children[parent.children.length-1].x - parent.children[0].x) / 2 + parent.children[0].x;
+          parent.x0 = parent.x
+          parent.y = d.y - ratio_y;
+          parent.y0 = parent.y;
+        }
+      });
+      latest_parents = checked.slice(0);
+      saved = saved.concat(checked);
+    }
+  }
+
+  // Toggle children on click.
+  function click(d) {
+    // make sure to only select maximum one element
+    if(document.getElementById(d.id).style.fill == "rgb(255, 255, 255)" && count < 1) {
+      document.getElementById(d.id).setAttribute("style", "fill : #e9544d; stroke: black");
+      if(d.id < 0) {
+        selected[0] = d.name;
+        id[0] = d.id;
+      }
+      else {
+        selected[0] = d.id;
+        id[0] = d.id;
+      }
+      count++;
+    }
+    else if(document.getElementById(d.id).style.fill == "rgb(255, 255, 255)" && count > 0){
+      document.getElementById(id[0]).setAttribute("style", "fill : #ffffff; stroke: steelblue");
+      document.getElementById(d.id).setAttribute("style", "fill : #e9544d; stroke: black");
+      if(d.id < 0) {
+        selected[0] = d.name;
+        id[0] = d.id;
+      }
+      else {
+        selected[0] = d.id;
+        id[0] = d.id;
+      }
+    }
+    else if(document.getElementById(d.id).style.fill == "rgb(233, 84, 77)" && count > 0 && d.id == id[0]) {
+      document.getElementById(d.id).setAttribute("style", "fill : #ffffff; stroke: steelblue");
+      selected[0] = null;
+      id[0] = null;
+      count--;
+    }
+  }
+
+  function rightclick(d) {
+    // make sure to only select maximum one element
+    if(document.getElementById(d.id).style.fill == "rgb(255, 255, 255)" && cnt < 1) {
+      document.getElementById(d.id).setAttribute("style", "fill : #5a78d3; stroke: black");
+      if(d.id < 0) {
+        selected[1] = d.name;
+        id[1] = d.id;
+      }
+      else {
+        selected[1] = d.id;
+        id[1] = d.id;
+      }
+      cnt++;
+    }
+    else if(document.getElementById(d.id).style.fill == "rgb(255, 255, 255)" && cnt > 0){
+      document.getElementById(id[1]).setAttribute("style", "fill : #ffffff; stroke: steelblue");
+      document.getElementById(d.id).setAttribute("style", "fill : #5a78d3; stroke: black");
+      if(d.id < 0) {
+        selected[1] = d.name;
+        id[1] = d.id;
+      }
+      else {
+        selected[1] = d.id;
+        id[1] = d.id;
+      }
+    }
+    else if(document.getElementById(d.id).style.fill == "rgb(90, 120, 211)" && cnt > 0 && d.id == id[1]) {
+      document.getElementById(d.id).setAttribute("style", "fill : #ffffff; stroke: steelblue");
+      selected[1] = null;
+      id[1] = null;
+      cnt--;
+    }
+  }
+
+  // set value of hidden element to the ids of the selected nodes
+  function getSelectedNodes() {
+    document.getElementById("hidden").value = selected;
+  }
+
+  d3.select(self.frameElement).style("height", "410px");
+  </script>
+{% endblock %}

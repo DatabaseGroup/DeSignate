@@ -1,0 +1,127 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block content %}
+  <!-- header with special colorization -->
+  <td style="width: 33.3%">
+    <img src="{% static "icons/file_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/group_inactive.png" %}" class="headerIcon"></img>
+    <img src="{% static "icons/results_inactive.png" %}" class="headerIcon"></img>
+  </td>
+  <td style="width: 33.3%">
+    <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+    <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+  </td>
+  </table>
+  <span class="headerLine"></span>
+  <table style="table-layout: fixed; text-align: center">
+    <td style="width: 33.3%"></td>
+    <td style="width: 33.3%; vertical-align: top;">
+      <a style="font-variant: small-caps; color: #379683; font-size: 20px"><b>File Input</b></a>
+    </td>
+    <form method="POST" enctype="multipart/form-data" >
+      {% csrf_token %}
+      <td style="width: 33.3%">
+        <button id="nextButton" type="submit" target="_blank" style="display: inline-block;border-color: #379683;color: #379683; position: relative">Next</button>
+        <a style="display:flex;text-decoration: none; font-size: 12px; float: right; margin-right: 20px; margin-top: 8px">Due to data privacy reasons this tool is not<br> supposed to process human gene sequences.</a>
+      </td>
+  </table>
+</div>
+<!-- header end --->
+
+<div class="box" style="overflow: hidden">
+  <p style="color: red">{{error_message}}</p>
+    <div style="display: block;top: 0;">
+      <div class="fileInput">
+        <p style="margin: 0; margin-bottom: 4px;padding: 0;"><b>Upload your input data:</b></p>
+      </div>
+      <table style="display: inline-block;margin-left: 50px" cellspacing="0">
+        <tr style="vertical-align: middle;">
+          <td class="settingsTable">
+            <a>Alignment<div class="toolTip">?<span class="toolTip">The alignment file (in fasta format) to the corresponding tree file.</span></div>: </a>
+          </td>
+          <td class="settingsTable">
+            <label id="seqlabel" for="sequence" class="customInput" style="margin-right: 80px">Choose File ...</label>
+            <input id="sequence" type="file" name="fasta" style="display: none" required></input>
+          </td>
+        </tr>
+        <tr style="vertical-align: middle;">
+          <td class="settingsTable">
+            <a>Phylogenetic tree<div class="toolTip">?<span class="toolTip">The tree file (in newick format) to the corresponding alignment file.</span></div>: </a>
+          </td>
+          <td class="settingsTable">
+            <label id ="treelabel" for="treefile" class="customInput">Choose File ...</label>
+            <input id="treefile" type="file" name="newick" style="display: none" required></input>
+          </td>
+        </tr>
+        <tr style="vertical-align: middle;">
+            <td class="settingsTable">Use example data<div class="toolTip">?<span class="toolTip">The example files consist of the same alignments shown in the DeSigNate Paper.</span></div>: </td>
+            <td class="settingsTable">
+              <label class="customCheck">
+                <input id="exampleFile" name="exampleFile" type="checkbox" default="off"></input>
+                <span></span>
+              </label>
+            </td>
+        </tr>
+      </table>
+      <div class="fileInput">
+        <p style=" margin: 0;margin-top: 10px;margin-bottom: 4px;padding: 0;"><b>Search parameter settings:</b></p>
+      </div>
+      <table style="display: inline-block;margin-left: 50px" cellspacing="0">
+        <tr style="vertical-align: middle;">
+          <td class="settingsTable">
+            <a>k-window<div class="toolTip">?<span class="toolTip">Values that define the range of alignment positions considered for analyses: default value k = 1 for individual nucleotide positions; values k > 1 for combined nucleotide positions.</span></div>: </a>
+          </td>
+          <td class="settingsTable">
+            <input id="kValue" type="number" name="kValue" value="1" min="1" style="margin-left: 10px; text-align: center" required></input>
+          </td>
+        </tr>
+      </table>
+    </div>
+    </form>
+</div>
+
+<script>
+  document.getElementById('sequence').onchange = function () {
+    document.getElementById('seqlabel').innerHTML = this.files[0].name;
+  };
+
+  document.getElementById('treefile').onchange = function () {
+    document.getElementById('treelabel').innerHTML = this.files[0].name;
+  };
+
+  document.getElementById('exampleFile').onchange = function () {
+    if(document.getElementById('seqlabel').style.color != "grey") {
+      document.getElementById('sequence').disabled = true;
+      document.getElementById('treefile').disabled = true;
+      document.getElementById('seqlabel').innerHTML = "example.fas";
+      document.getElementById('treelabel').innerHTML = "example.fas.treefile";
+
+      document.getElementById('seqlabel').style.borderColor = "grey";
+      document.getElementById('seqlabel').style.color = "grey";
+      document.getElementById('seqlabel').style.cursor = "not-allowed";
+
+      document.getElementById('treelabel').style.borderColor = "grey";
+      document.getElementById('treelabel').style.color = "grey";
+      document.getElementById('treelabel').style.cursor = "not-allowed";
+    }
+    else {
+      document.getElementById('sequence').disabled = false;
+      document.getElementById('treefile').disabled = false;
+      document.getElementById('seqlabel').innerHTML = "Choose File ...";
+      document.getElementById('treelabel').innerHTML = "Choose File ...";
+
+      document.getElementById('seqlabel').style.borderColor = "#379683";
+      document.getElementById('seqlabel').style.color = "#379683";
+      document.getElementById('seqlabel').style.cursor = "pointer";
+
+      document.getElementById('treelabel').style.borderColor = "#379683";
+      document.getElementById('treelabel').style.color = "#379683";
+      document.getElementById('treelabel').style.cursor = "pointer";
+    }
+
+  };
+</script>
+
+
+{% endblock %}
