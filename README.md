@@ -1,5 +1,7 @@
 # DeSigNate
 
+This work is under revision. Links to the publication will be added shortly.
+
 ## Tool description
 
 ### Detecting Signature Nucleotides for Taxon Diagnoses
