@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'f=zo74nm!pu08%x#v#a@52a24q9vur7h4i7*3-q7o%4kw6ty-i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'designate.dbresearch.uni-salzburg.at']
 
@@ -128,5 +128,5 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media', '')
 MEDIA_URL = '/media/'
 STATIC_URL = '/webapp/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'webapp', 'html', ''), os.path.join(BASE_DIR, 'webapp', 'icons', ''), os.path.join(BASE_DIR, 'webapp', 'js', ''), os.path.join(BASE_DIR, 'webapp', 'css', '')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'webapp')]
 FILE_UPLOAD_PERMISSIONS = 0o644

@@ -9,8 +9,8 @@
 
 
     <!-- load js for tree and chart -->
-    <script src="{% static 'd3.v2.js' %}"></script>
-    <script src="{% static 'chart-2.8.0.js' %}"></script>
+    <script src="{% static 'js/d3.v2.js' %}"></script>
+    <script src="{% static 'js/chart-2.8.0.js' %}"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-149788268-1"></script>
@@ -23,30 +23,30 @@
     </script>
 
     <!-- load css for website layout and tree -->
-    <link href="{% static "styles.css" %}" rel="stylesheet">
-    <link href="{% static "interactive_tree.css" %}" rel="stylesheet" type="text/css" />
+    <link href="{% static "css/styles.css" %}" rel="stylesheet">
+    <link href="{% static "css/interactive_tree.css" %}" rel="stylesheet" type="text/css" />
 
     <!-- cookie consent by osano https://github.com/osano/cookieconsent/ -->
-    <link rel="stylesheet" type="text/css" href="{% static 'cookieconsent.min.css' %}" />
-    <script src="{% static 'cookieconsent.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cookieconsent.min.css' %}" />
+    <script src="{% static 'js/cookieconsent.min.js' %}"></script>
 
     <!-- favicon links -->
-    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'icons/favicon/apple-icon-57x57.png' %}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'icons/favicon/apple-icon-60x60.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'icons/favicon/apple-icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'icons/favicon/apple-icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'icons/favicon/apple-icon-114x114.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'icons/favicon/apple-icon-120x120.png' %}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'icons/favicon/apple-icon-144x144.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'icons/favicon/apple-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/favicon/apple-icon-180x180.png' %}">
-    <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'icons/favicon/android-icon-192x192.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'icons/favicon/favicon-96x96.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icons/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'html/icons/favicon/apple-icon-57x57.png' %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'html/icons/favicon/apple-icon-60x60.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'html/icons/favicon/apple-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'html/icons/favicon/apple-icon-76x76.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'html/icons/favicon/apple-icon-114x114.png' %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'html/icons/favicon/apple-icon-120x120.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'html/icons/favicon/apple-icon-144x144.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'html/icons/favicon/apple-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'html/icons/favicon/apple-icon-180x180.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'html/icons/favicon/android-icon-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'html/icons/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'html/icons/favicon/favicon-96x96.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'html/icons/favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="html/icons/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="{% static 'icons/favicon/ms-icon-144x144.png' %}">
+    <meta name="msapplication-TileImage" content="{% static 'html/icons/favicon/ms-icon-144x144.png' %}">
     <meta name="theme-color" content="#ffffff">
   </head>
   <body>
@@ -55,7 +55,7 @@
         <td style="width: 33%">
           <a href="{% url 'home' %}" >
             <!-- <p class="title">DeSigNate</p> -->
-            <img src="{% static "icons/designate.png" %}" alt="designate" class="headerLogo" />
+            <img src="{% static "html/icons/designate.png" %}" alt="designate" class="headerLogo" />
           </a>
         </td>
         <!-- <p class="version">Version 0.1 Alpha</p> -->
