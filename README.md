@@ -1,6 +1,8 @@
 # DeSigNate
 
-This work is under revision. Links to the publication will be added shortly.
+The scientific manuscript of this work is currently under revision. Links to the publication will be added shortly.
+
+If you want to access the tool without cloning the respository, we host a publicly available server which runs the web-interface of DeSigNate at https://designate.dbresearch.uni-salzburg.at/.
 
 ## Tool description
 
@@ -16,30 +18,29 @@ In taxon diagnoses, only nucleotides that unambiguously distinguish the query fr
 
 ### Use DeSigNate via command-line
 
-DeSigNate can be used as a fully functional standalone command-line program without the web-interface or django server.
-To use it via command-line, Python3 has to be installed.  
-To see the full list of available parameters, execute the following command in the webapp directory:
+DeSigNate can be used as a fully functional command-line interface independent of the web-interface. Hence, the tool runs without installing Django and does not use Javascript libraries; however, Python 3 has to be installed.
 
+To see the full list of available command-line parameters, execute the following command within the webapp directory:
 ```
 python3 designate.py -h
 ```
-
-In the following example, the query group contains all species of the subtree with the preorder id 3 (resp. 5 for the reference group). With this configuration, individual and combined signature  nucleotides (k-window: k = 5) are identified and the entropy is calculated.
-
+Using the command-line interface, the query and the reference group are determined based on the preorder ID of an inner node in the phylogenetic tree. The phylogenetic tree can be printed with the following command:
+```
+python3 designate.py --phylotree <path_to_tree_file> --print_tree
+```
+In the following example, the query group contains all species of the subtree with the preorder ID 3 (resp. 5 for the reference group). With this configuration, individual and combined signature nucleotides (k-window: k = 5) are identified and the entropy is calculated.
 ```
 python3 designate.py --alignment <path_to_alignment_file> --phylotree <path_to_tree_file> --reference_group_id 5 --query_group_id 3 --signature_nucleotides --two_pos 5 --shannon_entropy
 ```
 
 ### Use DeSigNate via web-interface
 
-We host a publicly available server which runs DeSigNate at  https://designate.dbresearch.uni-salzburg.at/.
-However, the web-interface of DeSigNate can be run locally too.
-The tool is implemented using Django (Version 2.2.4). If Django is installed at your machine and you cloned the repository, the local server can be started by using the following command in the root directory of DeSigNate:
+Next to the command-line interface, this repository contains all the data needed to run web-interface of this tool locally. In order to do that, Django (Version 2.2.4) must be installed. The local server can be started with the following command in the root directory of DeSigNate:
 ```
 python3 manage.py runserver
 ```
-The tool will be available at localhost port 8000 (usually 127.0.0.1:8000).
-However, google analytics will even track local usage of the web-interface.
+Now, the tool is available at localhost port 8000 (usually 127.0.0.1:8000).
+Be aware that Google Analytics will also track local usage of the web-interface.
 
 
 ## Used libraries
