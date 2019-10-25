@@ -1,8 +1,5 @@
 # DeSigNate
 
-The scientific manuscript of this work is currently under revision. Links to the publication will be added shortly.
-
-If you want to access the tool without cloning the respository, we host a publicly available server which runs the web-interface of DeSigNate at https://designate.dbresearch.uni-salzburg.at/.
 
 ## Tool description
 
@@ -13,6 +10,14 @@ DeSigNate is an innovative tool for detecting diagnostic nucleotide positions fo
 In taxon diagnoses, only nucleotides that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature nucleotides are distinguished:
 1. at binary positions the nucleotides of the reference group are uniform but different from the nucleotide in the query group
 2. at asymmetric positions the nucleotides of the reference group are not uniform but different from the nucleotide in the query group.
+
+
+If you want to access the tool without cloning the respository, we host a publicly available server which runs the web-interface of DeSigNate at https://designate.dbresearch.uni-salzburg.at/.
+
+
+## Paper and Citation
+The scientific manuscript of this work is currently under revision. Links to the publication will be added shortly.
+
 
 ## Usage
 
@@ -51,6 +56,3 @@ Be aware that Google Analytics will also track local usage of the web-interface.
 - **newick.js:** used to parse the newick file. (https://github.com/jasondavies/newick.js)
 - **Google Analytics:** used to track the number of users. (https://analytics.google.com/analytics/web/)
 - **Cookie Consent:** used to display cookie message. (https://cookieconsent.osano.com/)
-## Paper and Citation
-If you use DeSigNate for your research, please cite the publication with DOI: >link.
-The paper is available at >link.
