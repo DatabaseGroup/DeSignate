@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- header with special colorization -->
+  <td style="width: 33%">
+    <img src="{% static "html/icons/file_inactive.png" %}" class="headerIcon"></img>
+    <img src="{% static "html/icons/group_active.png" %}" class="headerIcon"></img>
+    <img src="{% static "html/icons/results_inactive.png" %}" class="headerIcon"></img>
+  </td>
+  <td style="width: 33%">
+    <a href="{% url 'impressum' %}" class="headerButton">Impressum</a>
+    <a href="{% url 'privacy' %}" class="headerButton">Privacy</a>
+  </td>
+  </table>
+  <span class="headerLine"></span>
+  <table style="table-layout: fixed; text-align: center; vertical-align: top">
+    <td style="width: 33.3%"></td>
+    <td style="width: 33.3%; vertical-align: top;">
+      <a style="font-variant: small-caps; color: #AA8175; font-size: 20px"><b>Group Selection</b></a>
+    </td>
+    <td style="width: 33.3%">
+      <form method="POST" enctype="multipart/form-data" id="inputform">
+        {% csrf_token %}
+        <input id="nextButton" name="nextButton" type="submit" value="Next" target="_blank" style="border-color: #AA8175;color: #AA8175;"></input>
+      </form>
+    </td>
+  </table>
+</div>
+<!-- header end --->
+
+<div class="box">
+
+  <p style="color: red">{{error_message}}</p>
+
+  <div class="groupSelection">
+    <p style="margin: 0; padding:0"><b>Specify your query- and reference group:</b></p>
+  </div>
+
+  <table style="display: block; padding-left: 50px" cellspacing="0">
+    <tr>
+      <td class="settingsTable">
+        <a style="margin-top: 10px">Query Group<div class="toolTip">?<span class="toolTip">A list of comma-separated taxa names that specifies the query group.</span></div>: </a>
+      </td>
+    </tr>
+    <tr>
+      <td class="settingsTable">
+        <textarea type="text" name="qGroup" class="namesInput" form="inputform" placeholder="e.g.: Taxon_1, Taxon_2, Taxon_3" required></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td class="settingsTable">
+        <a style="margin-top: 10px">Reference Group<div class="toolTip">?<span class="toolTip">A list of comma-separated taxa names that specifies the reference group.</span></div>: </a>
+      </td>
+    </tr>
+    <tr>
+      <td class="settingsTable">
+        <textarea type="text" name="rGroup" class="namesInput" form="inputform" placeholder="e.g.: Taxon_4, Taxon_5, Taxon_6, Taxon_7" required></textarea>
+      </td>
+    </tr>
+  </table>
+
+
+
+
+</div>
+
+{% endblock %}
