@@ -418,6 +418,17 @@ td.settingsTable {
   margin-top: 10px;
 }
 
+/* --- names.html --- */
+
+.namesInput {
+  resize: vertical;
+  height: 32vh;
+  width: 92vw;
+  text-align: top;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
 /* --- results.html --- */
 
 /* table that displays the alignments */

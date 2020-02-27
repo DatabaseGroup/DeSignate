@@ -95,7 +95,10 @@ def file_input(request):
                 align_file = open(settings.BASE_DIR + "/example_input/example.fas", "rb").read()
             else:
                 # get necessary alignment and tree files
-                tree_file = request.FILES['newick'].read()
+                if "newick" in request.FILES:
+                    tree_file = request.FILES['newick'].read()
+                else:
+                    tree_file = False
                 align_file = request.FILES['fasta'].read()
 
             # get k value from input
@@ -109,12 +112,16 @@ def file_input(request):
             # delete tempfile
             temp.close()
 
-            with tempfile.NamedTemporaryFile() as temp:
-                temp.write(tree_file)
-                temp.seek(0)
-                request.session['phylo_tree'] = Phylo.read(temp.name, "newick")
-            # delete tempfile
-            temp.close()
+            if tree_file == False:
+                print("treefile is " + str(tree_file))
+                return HttpResponseRedirect('/names')
+            else:
+                with tempfile.NamedTemporaryFile() as temp:
+                    temp.write(tree_file)
+                    temp.seek(0)
+                    request.session['phylo_tree'] = Phylo.read(temp.name, "newick")
+                # delete tempfile
+                temp.close()
 
             # read newick file as string
             request.session['newick_tree'] = tree_file.splitlines()
@@ -219,6 +226,26 @@ def tree(request):
 
         return render(request, 'tree.html', {"error_message": error_message})
 
+def names(request):
+
+    if request.method == 'POST':
+        # get ids of selected nodes
+        request.session['qGroup'] = [x.strip() for x in request.POST.get('qGroup').split(',')]
+        request.session['rGroup'] = [x.strip() for x in request.POST.get('rGroup').split(',')]
+
+        request.session['id0'] = request.session['rGroup']
+        request.session['id1'] = request.session['qGroup']
+
+
+        request.session['phylo_tree'] = None
+
+
+        return HttpResponseRedirect('/results')
+
+
+
+    return render(request, 'tree2.html')
+
 '''
     @param request: httprequest of webpage results.html
     @return render: render the webpage settings.html
@@ -228,11 +255,17 @@ def tree(request):
 '''
 def results(request):
     try:
-        # compute alignments of both groups
-        alignments_ref_group = get_alignments_of_group(
-            get_all_terminals_of_inner_node(request.session.get('phylo_tree'), request.session.get('id0')), request.session.get('alignments'))
-        alignments_query_group = get_alignments_of_group(
-            get_all_terminals_of_inner_node(request.session.get('phylo_tree'), request.session.get('id1')), request.session.get('alignments'))
+        if request.session['phylo_tree'] != None:
+            # compute alignments of both groups
+            alignments_ref_group = get_alignments_of_group(
+                get_all_terminals_of_inner_node(request.session.get('phylo_tree'), request.session.get('id0')), request.session.get('alignments'))
+            alignments_query_group = get_alignments_of_group(
+                get_all_terminals_of_inner_node(request.session.get('phylo_tree'), request.session.get('id1')), request.session.get('alignments'))
+
+        else:
+            alignments_ref_group = get_groups_from_list(request.session['rGroup'], request.session.get('alignments'))
+            alignments_query_group = get_groups_from_list(request.session['qGroup'], request.session.get('alignments'))
+
 
         # remove possible duplicates in second group
         alignments_ref_group = list_difference(alignments_query_group,
@@ -245,8 +278,10 @@ def results(request):
 
         request.session['ranking'] = ranking
 
+
         # Missing group id in function call computes the shannon entropy for the full alignment.
         entropy_list_temp = shannon_entropy_analysis(request.session.get('alignments'), request.session.get('phylo_tree'))
+
 
         request.session['entropy_list_temp'] = entropy_list_temp
 
@@ -283,6 +318,7 @@ def results(request):
                     diversity_list[2].append(ranking[id][0])
             id = id + 1
 
+
         # sort the lists by position ASC to save searches later on
         diversity_list[0] = sorted(diversity_list[0])
         diversity_list[1] = sorted(diversity_list[1])
@@ -298,7 +334,7 @@ def results(request):
             x = [x[0], json.dumps(x[1])]
 
         # create a string for the files with group ids and session key for uniqueness
-        ids_key = str(request.session.get('id0') + "_" + request.session.get('id1') + "_" + request.session.session_key)
+        ids_key = str(str(request.session.get('id0')) + "_" + str(request.session.get('id1')) + "_" + request.session.session_key)
 
         request.session['ids_key'] = ids_key
 

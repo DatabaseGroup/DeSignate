@@ -185,6 +185,29 @@ def get_alignments_of_group(group_node_ids, alignments):
 
     return group_alignments
 
+def get_groups_from_list(group_ids, alignments):
+    """
+        Given a list of IDs and a list of alignments, return a list with
+        all alignments that belong the nodes in the group.
+    """
+
+    # Create an inverted list of alignments names from all alignments.
+    inverted_list_alignments = {}
+    alignment_idx = 0
+    for alignment in alignments:
+        inverted_list_alignments[alignment.name] = alignment_idx
+        alignment_idx += 1
+
+    # Lookup the inverted list to get the index of the alignment based on the
+    # node names specified in the group node ids.
+    group_alignments = list()
+    for id in group_ids:
+        if id in inverted_list_alignments:
+            group_alignments.append(
+                alignments[inverted_list_alignments[id]])
+
+    return group_alignments
+
 
 def list_difference(list1, list2):
     """
@@ -498,17 +521,24 @@ def one_positional_analysis(alignments, phylo_tree, query_group_id,
         and writes the one positional analysis results in a csv file.
     """
 
-    # Assemble the alignments according to the specified groups.
-    alignments_query_group = get_alignments_of_group(
-        get_all_terminals_of_inner_node(phylo_tree, query_group_id), alignments)
-    alignments_ref_group = get_alignments_of_group(
-        get_all_terminals_of_inner_node(phylo_tree, ref_group_id), alignments)
-    alignments_ref_group = list_difference(alignments_query_group,
-                                                alignments_ref_group)
+    if phylo_tree != None:
+        # Assemble the alignments according to the specified groups.
+        alignments_query_group = get_alignments_of_group(
+            get_all_terminals_of_inner_node(phylo_tree, query_group_id), alignments)
+        alignments_ref_group = get_alignments_of_group(
+            get_all_terminals_of_inner_node(phylo_tree, ref_group_id), alignments)
+        alignments_ref_group = list_difference(alignments_query_group,
+                                                    alignments_ref_group)
+
+    else:
+        # Assemble the alignments according to the specified groups.
+        alignments_query_group = get_groups_from_list(query_group_id, alignments)
+        alignments_ref_group = get_groups_from_list(ref_group_id, alignments)
 
     # Perform the one positional analysis per position.
     pos_ranking = one_positional_calculation(
         alignments_query_group, alignments_ref_group)
+
 
     # Sort descending by Manhatten distance and ascending by query and reference
     # rank or by position.
@@ -539,13 +569,19 @@ def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
         asymmetric combinations are included in the final ranking.
     """
 
-    # Assemble the alignments according to the specified groups.
-    alignments_query_group = get_alignments_of_group(
-        get_all_terminals_of_inner_node(phylo_tree, query_group_id), alignments)
-    alignments_ref_group = get_alignments_of_group(
-        get_all_terminals_of_inner_node(phylo_tree, ref_group_id), alignments)
-    alignments_ref_group = list_difference(alignments_query_group,
-                                                alignments_ref_group)
+    if phylo_tree != None:
+        # Assemble the alignments according to the specified groups.
+        alignments_query_group = get_alignments_of_group(
+            get_all_terminals_of_inner_node(phylo_tree, query_group_id), alignments)
+        alignments_ref_group = get_alignments_of_group(
+            get_all_terminals_of_inner_node(phylo_tree, ref_group_id), alignments)
+        alignments_ref_group = list_difference(alignments_query_group,
+                                                    alignments_ref_group)
+
+    else:
+        # Assemble the alignments according to the specified groups.
+        alignments_query_group = get_groups_from_list(query_group_id, alignments)
+        alignments_ref_group = get_groups_from_list(ref_group_id, alignments)
 
     # Perform one positional analysis and index positions based on
     # discriminative power and ranks of the query and reference group.
@@ -554,6 +590,7 @@ def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
 
     # Assign an index for each position.
     binary, asymmetric, noisy = assign_indices(one_pos_ranking)
+
 
     # If a threshold is given, perform two position analysis.
     # Do not if there are too little noisy positions.
@@ -580,6 +617,7 @@ def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
 
     # Extended one pos ranking, including two positional results.
     ranking = one_pos_ranking
+
 
     # Filter the result such that only indexed positions are returned.
     if filter_sig_nuc:

@@ -32,6 +32,7 @@ urlpatterns = [
     path('home/', views.home, name="home"),
     path('files/', views.file_input, name="fileInput"),
     path('tree/', views.tree, name="tree"),
+    path('names/', views.names, name="names"),
     path('results', views.results, name="results"),
     path('contact', views.contact, name="contact"),
     path('privacy', views.privacy, name="privacy"),
