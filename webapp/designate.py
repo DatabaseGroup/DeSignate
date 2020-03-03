@@ -201,10 +201,18 @@ def get_groups_from_list(group_ids, alignments):
     # Lookup the inverted list to get the index of the alignment based on the
     # node names specified in the group node ids.
     group_alignments = list()
+    alignment_keys = inverted_list_alignments.keys()
+    align_name = ""
     for id in group_ids:
-        if id in inverted_list_alignments:
+        for name in alignment_keys:
+            if id in name:
+                align_name = name
+        if align_name == "":
+            break
+        if align_name in inverted_list_alignments:
             group_alignments.append(
-                alignments[inverted_list_alignments[id]])
+                alignments[inverted_list_alignments[align_name]])
+
 
     return group_alignments
 

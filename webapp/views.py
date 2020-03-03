@@ -113,7 +113,6 @@ def file_input(request):
             temp.close()
 
             if tree_file == False:
-                print("treefile is " + str(tree_file))
                 return HttpResponseRedirect('/names')
             else:
                 with tempfile.NamedTemporaryFile() as temp:
@@ -352,6 +351,13 @@ def results(request):
         request.session.flush()
 
         return render(request, 'results.html', {'error_message': error_message})
+
+    # throw error if selected values could not be found
+    except SystemError as e:
+        error_message = "The selected names could not be found in the input data."
+        request.session.flush()
+
+        return render(request, 'results.html', {"error_message": error_message})
 
     # standard error message
     except Exception as e:
