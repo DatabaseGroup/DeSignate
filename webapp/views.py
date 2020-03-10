@@ -104,6 +104,11 @@ def file_input(request):
             # get k value from input
             request.session['k_value'] = request.POST.get('kValue')
 
+            if request.POST.get('considerGaps') == 'on':
+                request.session['consider_gaps'] = True
+            else:
+                request.session['consider_gaps'] = False
+
             # write to temporary files and use AlignIO and Phylo
             with tempfile.NamedTemporaryFile() as temp:
                 temp.write(align_file)
@@ -114,6 +119,7 @@ def file_input(request):
 
             if tree_file == False:
                 return HttpResponseRedirect('/names')
+
             else:
                 with tempfile.NamedTemporaryFile() as temp:
                     temp.write(tree_file)
@@ -241,9 +247,14 @@ def names(request):
 
         return HttpResponseRedirect('/results')
 
+    try:
+        return render(request, 'tree2.html', {'alignments': [x.name for x in request.session['alignments']]})
 
+    except Exception as e:
+        error_message = "An error occured. Did you upload a .fas file in the right format? Please return to the main page."
+        request.session.flush()
 
-    return render(request, 'tree2.html')
+        return render(request, 'tree2.html', {"error_message": error_message})
 
 '''
     @param request: httprequest of webpage results.html
@@ -271,9 +282,9 @@ def results(request):
                                                     alignments_ref_group)
 
         # compute d-power, q-rank and r-rank with individual nucleotide and combined nucleotide analysis
-        ranking = signature_nucleotide_detection(request.session.get('alignments'), request.session.get('phylo_tree'), request.session.get('id1'),
+        ranking = signature_character_detection(request.session.get('alignments'), request.session.get('phylo_tree'), request.session.get('id1'),
                                                 request.session.get('id0'), int(request.session.get('k_value')), None,False,
-                                                False)
+                                                False, request.session.get('consider_gaps'))
 
         request.session['ranking'] = ranking
 
