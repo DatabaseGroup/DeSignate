@@ -2,6 +2,150 @@
 {% load static %}
 
 {% block content %}
+
+  <script>
+
+    var alignments = {{ alignments|safe }};
+
+    var qRow = 1;
+    var rRow = 1;
+
+    // autocomplete taxa names function
+    function autocomplete(input, hiddenSpan, align_names) {
+
+      var row = 1;
+
+      if(input.id == "qGroup" && qRow > 1) {
+        row = qRow;
+      } else if(input.id == "rGroup" && rRow > 1) {
+        row = rRow;
+      }
+
+      var old_val = "";
+
+      function autocomplete_helper() {
+        if(!(this.value)) {
+          return false;
+        }
+
+        if(document.getElementById("ac_list")) {
+          while(document.getElementById("ac_list").firstChild) {
+            document.getElementById("ac_list").firstChild.remove();
+          }
+
+          document.getElementById("ac_list").remove();
+        }
+
+        // get value of last string entry in comma separated input
+        var value = this.value.split(",");
+        value = value[value.length-1].replace(/^\s+|\s+$/g, '');
+
+        if(hiddenSpan && old_val.length < this.value.length) {
+          hiddenSpan.innerHTML += this.value.charAt(this.value.length-1);
+        } else if(hiddenSpan && old_val.length >= this.value.length) {
+          hiddenSpan.innerHTML = hiddenSpan.innerHTML.substring(0, this.value.length);
+        }
+
+        var rect  = input.getBoundingClientRect();
+
+        // create div that holds list
+        var list = document.createElement("div");
+        list.setAttribute("id", "ac_list");
+        list.setAttribute("style", "position: absolute; background-color: white; z-index: 99; border: 1px solid black; border-bottom: 0;");
+
+        this.parentNode.appendChild(list);
+
+        var item = null;
+        var alreadySet = false;
+
+        for(i = 0; i < align_names.length; i++) {
+          if(align_names[i].substr(0, value.length) === value) {
+
+            // create item with matching name
+            item = document.createElement("div");
+            item.setAttribute("class", "acListItem");
+            item.innerHTML += align_names[i];
+            item.innerHTML += "<input type=\"hidden\" value=\"" + align_names[i] + "\"\\>";
+
+            item.addEventListener("click", function(e) {
+
+              // append characters that the user didnt input yet
+              hiddenSpan.innerHTML += this.getElementsByTagName("input")[0].value.substr(value.length);
+              input.value += this.getElementsByTagName("input")[0].value.substr(value.length);
+              old_val = input.value;
+              if(Math.floor(hiddenSpan.offsetWidth / document.getElementById("qGroup").offsetWidth) >= 1) {
+                hiddenSpan.innerHTML = this.getElementsByTagName("input")[0].value;
+                row++;
+              }
+
+              // remove whole list after selecting item
+              if(document.getElementById("ac_list")) {
+                while(document.getElementById("ac_list").firstChild) {
+                  document.getElementById("ac_list").firstChild.remove();
+                }
+
+
+
+                document.getElementById("ac_list").remove();
+              }
+            });
+
+            // append item to list
+            list.appendChild(item);
+          }
+        }
+
+        var list_length = list.offsetWidth;
+
+        if(Math.floor(hiddenSpan.offsetWidth / document.getElementById("qGroup").offsetWidth) >= 1 && alreadySet == false) {
+          hiddenSpan.innerHTML = "";
+          row++;
+        }
+
+        if(input.id == "qGroup") {
+          qRow = row;
+        } else if(input.id == "rGroup") {
+          rRow = row;
+        }
+
+        list.style.top = (rect.top + 20*row + "px");
+
+        if((list.offsetWidth + (hiddenSpan.offsetWidth % document.getElementById("qGroup").offsetWidth) + rect.left) > (rect.left + document.getElementById("qGroup").offsetWidth) ) {
+          list.style.left = (rect.left + document.getElementById("qGroup").offsetWidth) - list.offsetWidth + "px";
+        } else {
+          list.style.left = ((rect.left + hiddenSpan.offsetWidth) % (rect.left+ document.getElementById("qGroup").offsetWidth)) + "px";
+        }
+
+        old_val = hiddenSpan.innerHTML;
+      }
+
+      input.addEventListener("input", autocomplete_helper);
+      input.addEventListener("paste", (event) => {
+        let paste = (event.clipboardData || window.clipboardData).getData('text');
+
+        hiddenSpan.innerHTML += paste;
+        if(document.getElementById("ac_list")) {
+          document.getElementById("ac_list").style.left = hiddenSpan.innerHTML.offsetWidth % document.getElementById("qGroup").length;
+        }
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      // remove whole list when you click out of the text area
+      if(document.getElementById("ac_list")) {
+        while(document.getElementById("ac_list").firstChild) {
+          document.getElementById("ac_list").firstChild.remove();
+        }
+
+        document.getElementById("ac_list").remove();
+      }
+    });
+
+    function disableAC(input) {
+      input.parentNode.replaceChild(input.cloneNode(true), input);
+    }
+  </script>
+
   <!-- header with special colorization -->
   <td style="width: 33%">
     <img src="{% static "html/icons/file_inactive.png" %}" class="headerIcon"></img>
@@ -37,6 +181,17 @@
     <p style="margin: 0; padding:0"><b>Specify your query- and reference group:</b></p>
   </div>
 
+  <table>
+    <tr style="display: block; padding-left: 50px" cellspacing="0">
+        <td class="settingsTable">Autocomplete<div class="toolTip">?<span class="toolTip">Turn on/off autocomplete when entering names</span></div>:</td>
+        <td><label class="customCheck" style="left: 100">
+            <input id="acCheckbox" name="acCheckbox" type="checkbox" checked="true"></input>
+            <span></span>
+          </label>
+        </td>
+    </tr>
+  </table>
+
   <table style="display: block; padding-left: 50px" cellspacing="0">
     <tr>
       <td class="settingsTable">
@@ -45,7 +200,7 @@
     </tr>
     <tr>
       <td class="settingsTable">
-        <textarea type="text" name="qGroup" class="namesInput" form="inputform" placeholder="e.g.: Taxon_1, Taxon_2, Taxon_3" required></textarea>
+        <textarea type="text" id="qGroup" name="qGroup" class="namesInput" form="inputform" placeholder="e.g.: Taxon_1, Taxon_2, Taxon_3" required></textarea>
       </td>
     </tr>
     <tr>
@@ -55,14 +210,42 @@
     </tr>
     <tr>
       <td class="settingsTable">
-        <textarea type="text" name="rGroup" class="namesInput" form="inputform" placeholder="e.g.: Taxon_4, Taxon_5, Taxon_6, Taxon_7" required></textarea>
+        <textarea type="text" id="rGroup" name="rGroup" class="namesInput" form="inputform" placeholder="e.g.: Taxon_4, Taxon_5, Taxon_6, Taxon_7" required></textarea>
       </td>
     </tr>
   </table>
+
+  <div id="spanDiv" style="overflow: hidden; padding-left: 58px">
+    <span id="hiddenSpanQ" style="position: absolute; background-color: red; visibility: visible; overflow-x: hidden; white-space: nowrap; display: block; font-size: 12px; font-family: monospace;"></span>
+    <span id="hiddenSpanR" style="position: absolute; background-color: green; visibility: hidden; overflow-x: hidden; white-space: nowrap; display: block; font-size: 12px; font-family: monospace;"></span>
+  </div>
 
 
 
 
 </div>
+
+<script>
+  var ac = document.getElementById("acCheckbox").checked;
+
+  if(ac == true) {
+    autocomplete(document.getElementById("qGroup"), document.getElementById("hiddenSpanQ"), alignments);
+    autocomplete(document.getElementById("rGroup"), document.getElementById("hiddenSpanR"), alignments);
+  } else {
+    disableAC(document.getElementById("qGroup"));
+    disableAC(document.getElementById("rGroup"));
+  }
+
+  document.getElementById("acCheckbox").addEventListener("change", function(e) {
+    ac = document.getElementById("acCheckbox").checked;
+    if(ac == true) {
+      autocomplete(document.getElementById("qGroup"), document.getElementById("hiddenSpanQ"), alignments);
+      autocomplete(document.getElementById("rGroup"), document.getElementById("hiddenSpanR"), alignments);
+    } else {
+      disableAC(document.getElementById("qGroup"));
+      disableAC(document.getElementById("rGroup"));
+    }
+  });
+</script>
 
 {% endblock %}
