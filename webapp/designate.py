@@ -22,8 +22,9 @@
 # SOFTWARE.
 
 '''
-Program: Analyze DNA sequences based on the manhattan distance and the ranks of
-so-called nucleotide vectors of a query- and a reference group.
+Program: Identify molecular characters in gene sequence data by analyzing the
+sequences based on the manhattan distance and the ranks of so-called character
+state vectors of a query- and a reference group.
 '''
 
 import argparse
@@ -40,55 +41,57 @@ char_to_vector_idx = {
     'c': 1,
     'g': 2,
     't': 3,
-    '-': 4
+    '-': 4,
+    'n': 5
 }
 
 # Maps a combination of two dna sequence characters to a vector index.
 two_char_to_vector_idx = {
-    'aa': 0, 'ac': 1, 'ag': 2, 'at': 3, 'a-': 4,
-    'ca': 5, 'cc': 6, 'cg': 7, 'ct': 8, 'c-': 9,
-    'ga': 10, 'gc': 11, 'gg': 12, 'gt': 13, 'g-': 14,
-    'ta': 15, 'tc': 16, 'tg': 17, 'tt': 18, 't-': 19,
-    '-a': 20, '-c': 21, '-g': 22, '-t': 23, '--': 24
+    'aa': 0, 'ac': 1, 'ag': 2, 'at': 3, 'a-': 4, 'an': 5,
+    'ca': 6, 'cc': 7, 'cg': 8, 'ct': 9, 'c-': 10, 'cn': 11,
+    'ga': 12, 'gc': 13, 'gg': 14, 'gt': 15, 'g-': 16, 'gn': 17,
+    'ta': 18, 'tc': 19, 'tg': 20, 'tt': 21, 't-': 22, 'tn': 23,
+    '-a': 24, '-c': 25, '-g': 26, '-t': 27, '--': 28, '-n': 29,
+    'na': 30, 'nc': 31, 'ng': 32, 'nt': 33, 'n-': 34, 'nn': 35
 }
 
 
-def nuc_vectors_one_positions(list_of_alignments):
+def cs_vectors_one_positions(list_of_alignments):
     """
         Given a list of alignments, this function returns a list of lists,
-        containing the nucleotide vectors for each position. We count the
+        containing the character state vectors for each position. We count the
         number of occurences per base (a,c,g,t,-) and store them in a list
         [|a|,|t|,|c|,|g|,|-|].
     """
 
     # Stop if there are no alignments in the list.
     if not list_of_alignments:
-        raise SystemError("'nuc_vectors_one_positions': no alignment in \
+        raise SystemError("'cs_vectors_one_positions': no alignment in \
             list_of_alignments")
 
-    # Holds a list with nucleotide vectors per alignment position.
-    nuc_vectors = []
+    # Holds a list with character state vectors per alignment position.
+    cs_vectors = []
 
     # Assuming that all alignments are of the same size.
     for pos in range(len(list_of_alignments[0])):
-        nuc_vector = [0, 0, 0, 0, 0]
+        cs_vector = [0, 0, 0, 0, 0, 0]
         # Sum up the number of different bases over all alignments at position
         # pos.
         for alignment in list_of_alignments:
-            # Nucleotide at current position in lower case.
-            nucleotide = alignment.seq[pos].lower()
+            # Character state at current position in lower case.
+            character_state = alignment.seq[pos].lower()
             # If statement needed to fix input characters other a, c, g, t, -.
             # Treat all others as '-'.
-            if nucleotide in char_to_vector_idx:
-                nuc_vector[char_to_vector_idx[nucleotide]] +=1
+            if character_state in char_to_vector_idx:
+                cs_vector[char_to_vector_idx[character_state]] +=1
             else:
-                nuc_vector[char_to_vector_idx['-']] +=1
-        nuc_vectors.append(nuc_vector)
+                cs_vector[char_to_vector_idx['n']] +=1
+        cs_vectors.append(cs_vector)
 
-    return nuc_vectors
+    return cs_vectors
 
 
-def nuc_vectors_two_positions(list_of_alignments, combinations):
+def cs_vectors_two_positions(list_of_alignments, combinations):
     """
         Returns the base combination of all positions in the
         alignment.
@@ -96,42 +99,42 @@ def nuc_vectors_two_positions(list_of_alignments, combinations):
 
     # Stop if there are no alignmentsn or combinations in the list.
     if not list_of_alignments:
-        raise SystemError("'nuc_vectors_two_positions_k': no alignment in \
+        raise SystemError("'cs_vectors_two_positions_k': no alignment in \
             list_of_alignments")
     if not combinations:
-        raise SystemError("'nuc_vectors_two_positions_k': no combinations \
+        raise SystemError("'cs_vectors_two_positions_k': no combinations \
             in combinations")
 
-    # Holds a list with nucleotide vectors per alignment position combination.
-    nuc_vectors = []
+    # Holds a list with character state vectors per alignment position combination.
+    cs_vectors = []
 
     # Assuming that all alignments are of the same size.
     for i, j in combinations:
-        # Given 5 possible characters, there are 25 combinations of two
+        # Given 6 possible characters, there are 36 combinations of two
         # positions.
-        nuc_vector = 25 * [0]
+        cs_vector = 36 * [0]
         # Sum up the number of different bases over all alignments at
         # position pos.
         for alignment in list_of_alignments:
-            # Combined nucleotide (i, j); nucleotide at position i
+            # Combined character state (i, j); character state at position i
             # in lower case.
-            nucleotide_i = alignment.seq[i].lower()
+            character_state_i = alignment.seq[i].lower()
             # Fix for different input characters than a, c, g, t, -. Treat
             # all others as '-'.
             base_string = ""
-            if nucleotide_i not in char_to_vector_idx: base_string += "-"
-            else: base_string += nucleotide_i
+            if character_state_i not in char_to_vector_idx: base_string += "n"
+            else: base_string += character_state_i
 
-            # Combined nucleotide (i, j); nucleotide at position j
+            # Combined character state (i, j); character state at position j
             # in lower case.
-            nucleotide_j = alignment.seq[j].lower()
-            if nucleotide_j not in char_to_vector_idx: base_string += "-"
-            else: base_string += nucleotide_j
+            character_state_j = alignment.seq[j].lower()
+            if character_state_j not in char_to_vector_idx: base_string += "n"
+            else: base_string += character_state_j
 
-            nuc_vector[two_char_to_vector_idx[base_string]] += 1
-        nuc_vectors.append([(i, j), nuc_vector])
+            cs_vector[two_char_to_vector_idx[base_string]] += 1
+        cs_vectors.append([(i, j), cs_vector])
 
-    return nuc_vectors
+    return cs_vectors
 
 
 def assign_pre_id_to_inner_nodes(phylo_tree):
@@ -232,18 +235,19 @@ def list_difference(list1, list2):
     return new_list2
 
 
-def norm_manhattan_distance(nuc_vector1, nuc_vector2):
+def norm_manhattan_distance(cs_vector1, cs_vector2):
     """
-        Given two lists containing nucleotide vectors, this functions returns
+        Given two lists containing character state vectors, this functions returns
         the normalized Manhattan distance between these two vectors.
     """
 
-    return (sum(abs(a-b) for a,b in zip(nuc_vector1, nuc_vector2))) / (sum(nuc_vector1) + sum(nuc_vector2))
+    return ((sum(abs(a-b) for a,b in zip(cs_vector1, cs_vector2))) / 
+            (sum(cs_vector1) + sum(cs_vector2)))
 
 
-def get_rank(nuc_vector, one_pos=True):
+def get_rank(cs_vector, one_pos=True):
     """
-        Given a nucleotide vector, return the rank and the base that occurs the
+        Given a character state vector, return the rank and the base that occurs the
         most.
     """
 
@@ -251,20 +255,21 @@ def get_rank(nuc_vector, one_pos=True):
     max_base_nr = 0
     max_base_pos = 0
 
-    for element in range(len(nuc_vector)):
-        if nuc_vector[element] != 0:
+    for element in range(len(cs_vector)):
+        if cs_vector[element] != 0:
             rank += 1
-            if nuc_vector[element] > max_base_nr:
+            if cs_vector[element] > max_base_nr:
                 max_base = position_to_base(element, one_pos)
                 max_base_pos = element
-                max_base_nr = nuc_vector[element]
+                max_base_nr = cs_vector[element]
 
     return rank, position_to_base(max_base_pos, one_pos)
 
 
 def position_to_base(pos, one_pos=True):
     """
-        Given a base vector index, return the according base.
+        Given a character state vector index, return the according character 
+        state.
     """
     if one_pos:
         if pos == 0: return 'a'
@@ -272,50 +277,51 @@ def position_to_base(pos, one_pos=True):
         elif pos == 2: return 'g'
         elif pos == 3: return 't'
         elif pos == 4: return '-'
-        else: raise SystemError("'position_to_base': one_pos index out of bounds")
+        elif pos == 5: return 'n'
+        else: 
+            raise SystemError("'position_to_base': one_pos index out of bounds")
     else:
         if pos == 0: return 'aa'
         elif pos == 1: return 'ac'
         elif pos == 2: return 'ag'
         elif pos == 3: return 'at'
         elif pos == 4: return 'a-'
-        elif pos == 5: return 'ca'
-        elif pos == 6: return 'cc'
-        elif pos == 7: return 'cg'
-        elif pos == 8: return 'ct'
-        elif pos == 9: return 'c-'
-        elif pos == 10: return 'ga'
-        elif pos == 11: return 'gc'
-        elif pos == 12: return 'gg'
-        elif pos == 13: return 'gt'
-        elif pos == 14: return 'g-'
-        elif pos == 15: return 'ta'
-        elif pos == 16: return 'tc'
-        elif pos == 17: return 'tg'
-        elif pos == 18: return 'tt'
-        elif pos == 19: return 't-'
-        elif pos == 20: return '-a'
-        elif pos == 21: return '-c'
-        elif pos == 22: return '-g'
-        elif pos == 23: return '-t'
-        elif pos == 24: return '--'
-        else: raise SystemError("'position_to_base': two_pos index out of bounds")
+        elif pos == 5: return 'an'
+        elif pos == 6: return 'ca'
+        elif pos == 7: return 'cc'
+        elif pos == 8: return 'cg'
+        elif pos == 9: return 'ct'
+        elif pos == 10: return 'c-'
+        elif pos == 11: return 'cn'
+        elif pos == 12: return 'ga'
+        elif pos == 13: return 'gc'
+        elif pos == 14: return 'gg'
+        elif pos == 15: return 'gt'
+        elif pos == 16: return 'g-'
+        elif pos == 17: return 'gn'
+        elif pos == 18: return 'ta'
+        elif pos == 19: return 'tc'
+        elif pos == 20: return 'tg'
+        elif pos == 21: return 'tt'
+        elif pos == 22: return 't-'
+        elif pos == 23: return 'tn'
+        elif pos == 24: return '-a'
+        elif pos == 25: return '-c'
+        elif pos == 26: return '-g'
+        elif pos == 27: return '-t'
+        elif pos == 28: return '--'
+        elif pos == 29: return '-n'
+        elif pos == 30: return 'na'
+        elif pos == 31: return 'nc'
+        elif pos == 32: return 'ng'
+        elif pos == 33: return 'nt'
+        elif pos == 34: return 'n-'
+        elif pos == 35: return 'nn'
+        else: 
+            raise SystemError("'position_to_base': two_pos index out of bounds")
 
 
-def two_position_to_base(pos):
-    """
-        Given a base vector index, return the according base.
-    """
-
-    if pos == 0: return 'a'
-    elif pos == 1: return 'c'
-    elif pos == 2: return 'g'
-    elif pos == 3: return 't'
-    elif pos == 4: return '-'
-    else: raise SystemError("'position_to_base': index out of bounds")
-
-
-def assign_indices(sorted_one_pos_ranking):
+def assign_indices(sorted_one_pos_ranking, consider_gaps=False):
     """
         Given the output of the one positional analysis, this function returns
         the index of each position. As defined by Waegele and Mayer (2007), we
@@ -333,9 +339,11 @@ def assign_indices(sorted_one_pos_ranking):
     # [pos, disc. power, (query rank, query max base), (ref rank, ref max base)]
     # An example for pos_info is [434, 1.0, "(1, 'g')", "(1, 'a')"].
     for pos_info in sorted_one_pos_ranking:
-        # We only consider positions with unique bases in the query group (query
-        # rank = 1).
-        if pos_info[2][0] == 1 and pos_info[2][1] != '-':
+        # We only consider positions with unique a character state in the query
+        # group (query rank = 1). Consider gaps only if the flag is set. Do not
+        # consider positions with unique missing information ('n').
+        if (pos_info[2][0] == 1 and (pos_info[2][1] != '-' or consider_gaps) and 
+            pos_info[2][1] != 'n'):
             # A discriminative power of 1 is either binary or asymmetric.
             if pos_info[1] == 1:
                 # A position is binary if the rank of the reference group is 1.
@@ -365,61 +373,68 @@ def one_positional_calculation(query_group, reference_group):
     """
 
     one_pos_index = list()
-    nuc_vectors_query_group = nuc_vectors_one_positions(query_group)
-    nuc_vectors_ref_group = nuc_vectors_one_positions(reference_group)
+    cs_vectors_query_group = cs_vectors_one_positions(query_group)
+    cs_vectors_ref_group = cs_vectors_one_positions(reference_group)
 
-    for pos in range(len(nuc_vectors_query_group)):
-        one_pos_index.append([pos + 1,
-            norm_manhattan_distance(nuc_vectors_query_group[pos],
-                nuc_vectors_ref_group[pos]),
-            get_rank(nuc_vectors_query_group[pos]),
-            get_rank(nuc_vectors_ref_group[pos])
-        ])
+    for pos in range(len(cs_vectors_query_group)):
+        disc_power = norm_manhattan_distance(cs_vectors_query_group[pos],
+                cs_vectors_ref_group[pos])
+        query_rank = get_rank(cs_vectors_query_group[pos])
+        ref_rank = get_rank(cs_vectors_ref_group[pos])
+        
+        # If all character states in the query group are missing, set the
+        # discriminative power to 0.
+        if query_rank[1] == 'n':
+            disc_power = 0
+
+        one_pos_index.append([pos + 1, disc_power, query_rank, ref_rank])
 
     return one_pos_index
 
-def number_of_different_bases(nuc_vector_query_group, nuc_vector_ref_group):
+def number_of_different_bases(cs_vector_query_group, cs_vector_ref_group):
     """
         Returns the number of different bases at a specific position in the
         reference as well as the control group.
     """
 
     counter = 0
-    for pos in range(len(nuc_vector_query_group)):
-        if (nuc_vector_query_group[pos] + nuc_vector_ref_group[pos]) > 0:
+    for pos in range(len(cs_vector_query_group)):
+        if (cs_vector_query_group[pos] + cs_vector_ref_group[pos]) > 0:
             counter += 1
 
     return counter
 
 
-def two_positional_calculation(query_group, ref_group, combinations):
+def two_positional_calculation(query_group, ref_group, combinations, 
+                                consider_gaps=False):
     """
         Analyse the combination of two positions by the Manhattan distance of
-        their nucleotide vectors and the rank of th.
+        their character state vectors and the rank of th.
     """
 
     binary = list()
     asymmetric = list()
     noisy = list()
 
-    nuc_vectors_query_group = nuc_vectors_two_positions(query_group,
+    cs_vectors_query_group = cs_vectors_two_positions(query_group,
         combinations)
-    nuc_vectors_ref_group = nuc_vectors_two_positions(ref_group, combinations)
+    cs_vectors_ref_group = cs_vectors_two_positions(ref_group, combinations)
 
-    # There are as many entries in the two nucleotide vectors as combinations.
+    # There are as many entries in the two character state vectors as combinations.
     for i in range(len(combinations)):
-        # nuc_vectors_query_group[i] = [(4,67), [0,4,3,12,...]]
-        disc_power = norm_manhattan_distance(nuc_vectors_query_group[i][1],
-            nuc_vectors_ref_group[i][1])
-        query_rank, query_max_base = get_rank(nuc_vectors_query_group[i][1],
+        # cs_vectors_query_group[i] = [(4,67), [0,4,3,12,...]]
+        disc_power = norm_manhattan_distance(cs_vectors_query_group[i][1],
+            cs_vectors_ref_group[i][1])
+        query_rank, query_max_base = get_rank(cs_vectors_query_group[i][1],
             False)
-        ref_rank, ref_max_base = get_rank(nuc_vectors_ref_group[i][1], False)
+        ref_rank, ref_max_base = get_rank(cs_vectors_ref_group[i][1], False)
 
         pos_info = [(combinations[i][0]+1, combinations[i][1]+1), disc_power,
             (query_rank, query_max_base), (ref_rank, ref_max_base)]
 
         # We only consider positions with unique bases in the query group.
-        if query_rank == 1 and query_max_base != '-':
+        if (query_rank == 1 and (query_max_base != '-' or consider_gaps) and 
+            query_max_base != 'n'):
             if disc_power == 1:
                 # Binary if the reference group has only one but another base.
                 # Otherwise, asymmetric.
@@ -447,17 +462,17 @@ def shannon_entropy_calculation(alignments):
         alignments.
     """
 
-    nuc_vectors = nuc_vectors_one_positions(alignments)
+    cs_vectors = cs_vectors_one_positions(alignments)
     number_of_alignments = len(alignments)
     entropy_per_pos = list()
 
-    for pos in range(len(nuc_vectors)):
+    for pos in range(len(cs_vectors)):
         # Entropy H = E[I] = sum[z in Z] -pz * log2(pz)
         # Z = [a, c, g, t, -]
         entropy = 0.0
         for base_idx in range(5):
-            if nuc_vectors[pos][base_idx] > 0:
-                p = nuc_vectors[pos][base_idx] / number_of_alignments
+            if cs_vectors[pos][base_idx] > 0:
+                p = cs_vectors[pos][base_idx] / number_of_alignments
                 entropy += -p * log(p, 2)
         entropy_per_pos.append([pos+1, entropy])
 
@@ -489,31 +504,6 @@ def averages_calculation(shannon_entropy, k):
 
     return averages
 
-
-def index_analysis(alignments, phylo_tree, query_group_id, ref_group_id,
-                    filename=None, order_pos=False):
-    """
-        Wrapper for index calculation. Assembles the alignment groups and writes
-        the index result in a csv file.
-    """
-
-    # Perform one positional analysis and index positions based on
-    # discriminative power and ranks of the query and reference group.
-    sorted_one_pos_ranking = one_positional_analysis(alignments, phylo_tree,
-        query_group_id, ref_group_id, None, order_pos)
-
-    # Assign an index for each position.
-    binary, asymmetric, noisy = assign_indices(sorted_one_pos_ranking)
-
-    # Write result to csv file.
-    if filename is not None:
-        write_csv_file(filename, ["position", "disriminative power",
-            "query rank", "reference_rank", "index"],
-            binary + asymmetric + noisy)
-
-    return binary, asymmetric, noisy
-
-
 def one_positional_analysis(alignments, phylo_tree, query_group_id,
                             ref_group_id, filename=None, order_pos=False):
     """
@@ -524,20 +514,23 @@ def one_positional_analysis(alignments, phylo_tree, query_group_id,
     if phylo_tree != None:
         # Assemble the alignments according to the specified groups.
         alignments_query_group = get_alignments_of_group(
-            get_all_terminals_of_inner_node(phylo_tree, query_group_id), alignments)
+            get_all_terminals_of_inner_node(phylo_tree, query_group_id), 
+            alignments)
         alignments_ref_group = get_alignments_of_group(
-            get_all_terminals_of_inner_node(phylo_tree, ref_group_id), alignments)
+            get_all_terminals_of_inner_node(phylo_tree, ref_group_id), 
+            alignments)
         alignments_ref_group = list_difference(alignments_query_group,
                                                     alignments_ref_group)
 
     else:
         # Assemble the alignments according to the specified groups.
-        alignments_query_group = get_groups_from_list(query_group_id, alignments)
+        alignments_query_group = get_groups_from_list(query_group_id, 
+                                                        alignments)
         alignments_ref_group = get_groups_from_list(ref_group_id, alignments)
 
     # Perform the one positional analysis per position.
-    pos_ranking = one_positional_calculation(
-        alignments_query_group, alignments_ref_group)
+    pos_ranking = one_positional_calculation(alignments_query_group, 
+                                                alignments_ref_group)
 
 
     # Sort descending by Manhatten distance and ascending by query and reference
@@ -556,11 +549,12 @@ def one_positional_analysis(alignments, phylo_tree, query_group_id,
     return sorted_pos_ranking
 
 
-def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
+def signature_character_detection(alignments, phylo_tree, query_group_id,
                                     ref_group_id, threshold=1, filename=None,
-                                    order_pos=False, filter_sig_nuc=False):
+                                    order_pos=False, filter_sig_nuc=False, 
+                                    consider_gaps=False):
     """
-        Wrapper for the signature nucleotide detection algorithm. Given a query
+        Wrapper for the signature character detection algorithm. Given a query
         and reference group, all positions are ranked by manhattan distance and
         query and reference rank. Further they are indexed, filtered, and
         ordered based on the in the input parameters. Given a threshold for the
@@ -572,15 +566,18 @@ def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
     if phylo_tree != None:
         # Assemble the alignments according to the specified groups.
         alignments_query_group = get_alignments_of_group(
-            get_all_terminals_of_inner_node(phylo_tree, query_group_id), alignments)
+            get_all_terminals_of_inner_node(phylo_tree, query_group_id), 
+            alignments)
         alignments_ref_group = get_alignments_of_group(
-            get_all_terminals_of_inner_node(phylo_tree, ref_group_id), alignments)
+            get_all_terminals_of_inner_node(phylo_tree, ref_group_id), 
+            alignments)
         alignments_ref_group = list_difference(alignments_query_group,
-                                                    alignments_ref_group)
-
+                                                alignments_ref_group)
     else:
-        # Assemble the alignments according to the specified groups.
-        alignments_query_group = get_groups_from_list(query_group_id, alignments)
+        # If no tree is given, the query and reference groups are defined based 
+        # a given comma-separated taxa list.
+        alignments_query_group = get_groups_from_list(query_group_id, 
+            alignments)
         alignments_ref_group = get_groups_from_list(ref_group_id, alignments)
 
     # Perform one positional analysis and index positions based on
@@ -589,7 +586,7 @@ def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
         query_group_id, ref_group_id, None, order_pos)
 
     # Assign an index for each position.
-    binary, asymmetric, noisy = assign_indices(one_pos_ranking)
+    binary, asymmetric, noisy = assign_indices(one_pos_ranking, consider_gaps)
 
 
     # If a threshold is given, perform two position analysis.
@@ -610,7 +607,7 @@ def signature_nucleotide_detection(alignments, phylo_tree, query_group_id,
         # Compute the index for two position combinations. Consider only single
         # noisy positions and look for combinations that become asymmetric.
         b, a, n = two_positional_calculation(alignments_query_group,
-                alignments_ref_group, combinations)
+                alignments_ref_group, combinations, consider_gaps)
 
         # Extend the single asymmetric positions with the combined ones.
         one_pos_ranking.extend(a)
@@ -716,15 +713,18 @@ def main():
         that subtree are considered in the reference group of the analysis.")
     parser.add_argument("--print_tree", default=False, action="store_true",
         help="Print the tree using the Biopython draw function.")
-    parser.add_argument("--signature_nucleotides",default=False,
-        action="store_true", help="Perform the signature nucleotide analysis.")
+    parser.add_argument("--signature_characters",default=False,
+        action="store_true", help="Perform the signature character analysis.")
+    parser.add_argument("--consider_gaps",default=False,
+        action="store_true", help="Classify signature characters with gap \
+        state.")
     parser.add_argument("--k_window", type=int, default=1,
         help="Combine two noisy positions in order to find more asymmetric \
         pairs resulting in a higher number of unique characteristics. The \
         required parameter k is used for the so-called k-window. Only noisy \
         positions in a range of k are considered to be combined for analysis.")
     parser.add_argument("--filter", default=False, action="store_true",
-        help="Only save and/or display signature nucleotides.")
+        help="Only save and/or display signature characters.")
     parser.add_argument("--save", default=False, action="store_true",
         help="Write the results of the analysis to a file.")
     parser.add_argument("--pos_order", default=False, action="store_true",
@@ -744,15 +744,15 @@ def main():
     phylo_tree = Phylo.read(args.phylotree, args.phylotree_format)
     assign_pre_id_to_inner_nodes(phylo_tree)
 
-    # Perform signature nucleotide detection.
-    if args.signature_nucleotides:
+    # Perform signature character detection.
+    if args.signature_characters:
         sig_nuc_filename = None
         if args.save:
-            sig_nuc_filename = filename + "_signature_nucleotides.csv"
+            sig_nuc_filename = filename + "_signature_characters.csv"
 
-        signature_nucleotide_detection(alignments, phylo_tree,
+        signature_character_detection(alignments, phylo_tree,
             args.query_group_id, args.reference_group_id, args.k_window,
-            sig_nuc_filename, args.pos_order, args.filter)
+            sig_nuc_filename, args.pos_order, args.filter, args.consider_gaps)
 
     # Perform shannon entropy calculation.
     if args.shannon_entropy:

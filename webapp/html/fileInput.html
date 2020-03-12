@@ -38,7 +38,7 @@
       <table style="display: inline-block;margin-left: 50px" cellspacing="0">
         <tr style="vertical-align: middle;">
           <td class="settingsTable">
-            <a>Alignment<div class="toolTip">?<span class="toolTip">The alignment file (in fasta format) to the corresponding tree file.</span></div>: </a>
+            <a>Nucleotide sequence alignment<div class="toolTip">?<span class="toolTip">The alignment in the fasta file format. The following character states are considered:  (1) “A, C, G, T” for nucleotides; (2) “–“ for deletions (gaps), and (3) “N” for missing data.</span></div>: </a>
           </td>
           <td class="settingsTable">
             <label id="seqlabel" for="sequence" class="customInput" style="margin-right: 80px">Choose File ...</label>
@@ -47,7 +47,7 @@
         </tr>
         <tr style="vertical-align: middle;">
           <td class="settingsTable">
-            <a>Phylogenetic tree<div class="toolTip">?<span class="toolTip">The tree file (in newick format) to the corresponding alignment file.</span></div>: </a>
+            <a>Phylogenetic tree<div class="toolTip">?<span class="toolTip">The tree file in the newick file format to the corresponding alignment. Both have to use identical labels.</span></div>: </a>
           </td>
           <td class="settingsTable">
             <label id ="treelabel" for="treefile" class="customInput">Choose File ...</label>
@@ -55,10 +55,19 @@
           </td>
         </tr>
         <tr style="vertical-align: middle;">
-            <td class="settingsTable">Use example data<div class="toolTip">?<span class="toolTip">The example files consist of the same alignments shown in the DeSigNate Paper.</span></div>: </td>
+            <td class="settingsTable">Use example dataset<div class="toolTip">?<span class="toolTip">The example dataset comprises the alignment and tree shown in Figure 1 of the publication.</span></div>: </td>
             <td class="settingsTable">
               <label class="customCheck">
                 <input id="exampleFile" name="exampleFile" type="checkbox" default="off"></input>
+                <span></span>
+              </label>
+            </td>
+        </tr>
+        <tr style="vertical-align: middle;">
+            <td class="settingsTable">Consider deletions (gaps)<div class="toolTip">?<span class="toolTip">The example dataset comprises the alignment and tree shown in Figure 1 of the publication.</span></div>: </td>
+            <td class="settingsTable">
+              <label class="customCheck">
+                <input id="considerGaps" name="considerGaps" type="checkbox" default="off"></input>
                 <span></span>
               </label>
             </td>
@@ -70,7 +79,7 @@
       <table style="display: inline-block;margin-left: 50px" cellspacing="0">
         <tr style="vertical-align: middle;">
           <td class="settingsTable">
-            <a>k-window<div class="toolTip">?<span class="toolTip">Values that define the range of alignment positions considered for analyses: default value k = 1 for individual nucleotide positions; values k > 1 for combined nucleotide positions.</span></div>: </a>
+            <a>k-window<div class="toolTip">?<span class="toolTip">Values that define the range of alignment positions considered for the analysis of combined characters (= paired alignment positions): default value k = 1 for single positions; values k > 1 for the range of positions considered for combined characters.</span></div>: </a>
           </td>
           <td class="settingsTable">
             <input id="kValue" type="number" name="kValue" value="1" min="1" style="margin-left: 10px; text-align: center" required></input>
