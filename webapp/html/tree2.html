@@ -4,7 +4,7 @@
 {% block content %}
 
   <script>
-
+    /*
     var alignments = {{ alignments|safe }};
 
     var qRow = 1;
@@ -144,6 +144,7 @@
     function disableAC(input) {
       input.parentNode.replaceChild(input.cloneNode(true), input);
     }
+    */
   </script>
 
   <!-- header with special colorization -->
@@ -180,7 +181,7 @@
   <div class="groupSelection">
     <p style="margin: 0; padding:0"><b>Specify your query- and reference group:</b></p>
   </div>
-
+  <!--
   <table>
     <tr style="display: block; padding-left: 50px" cellspacing="0">
         <td class="settingsTable">Autocomplete<div class="toolTip">?<span class="toolTip">Turn on/off autocomplete when entering names</span></div>:</td>
@@ -191,6 +192,7 @@
         </td>
     </tr>
   </table>
+  -->
 
   <table style="display: block; padding-left: 50px" cellspacing="0">
     <tr>
@@ -216,7 +218,7 @@
   </table>
 
   <div id="spanDiv" style="overflow: hidden; padding-left: 58px">
-    <span id="hiddenSpanQ" style="position: absolute; background-color: red; visibility: visible; overflow-x: hidden; white-space: nowrap; display: block; font-size: 12px; font-family: monospace;"></span>
+    <span id="hiddenSpanQ" style="position: absolute; background-color: red; visibility: hidden; overflow-x: hidden; white-space: nowrap; display: block; font-size: 12px; font-family: monospace;"></span>
     <span id="hiddenSpanR" style="position: absolute; background-color: green; visibility: hidden; overflow-x: hidden; white-space: nowrap; display: block; font-size: 12px; font-family: monospace;"></span>
   </div>
 
@@ -226,6 +228,7 @@
 </div>
 
 <script>
+  /*
   var ac = document.getElementById("acCheckbox").checked;
 
   if(ac == true) {
@@ -246,6 +249,7 @@
       disableAC(document.getElementById("rGroup"));
     }
   });
+  */
 </script>
 
 {% endblock %}
