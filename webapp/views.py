@@ -385,15 +385,15 @@ def results(request):
 def download_zip(request):
 
     # prepare the files for download
-    create_zip(request.session.get('ranking'), request.session.get('entropy_list_temp'), request.session.get('ids_key'))
+    create_zip(request, request.session.get('ranking'), request.session.get('entropy_list_temp'), request.session.get('ids_key'))
 
     # TODO: Is it possible to create the zip only in this case? Do we have the ranking and the entropy here?
     ids = str(request.session.get('id0')) + "_" + str(request.session.get('id1'))
-    filename = settings.MEDIA_ROOT + "DeSigNate_Groups_" + ids + "_" + request.session.session_key + ".zip"
+    filename = settings.MEDIA_ROOT + "DeSigNate_Groups_" + time.asctime().replace(' ', '_').replace(':', '_') + "_" + request.session.session_key + ".zip"
 
     response = HttpResponse(open(filename, 'rb'), content_type='application/zip')
     response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = 'attachment; filename=%s' % str('DeSigNate_Groups_' + ids + '.zip')
+    response['Content-Disposition'] = 'attachment; filename=%s' % str('DeSigNate_Results_' + time.asctime().replace(' ', '_').replace(':', '_') + '.zip')
     return response
 
 def contact(request):
@@ -410,10 +410,10 @@ def impressum(request):
     @param entropy: list of entropy values create by shannon_entropy_analysis()
     @param ids:     string consisting of the query group id, the reference group id, and the session_key
 '''
-def create_zip(ranking, entropy, ids):
+def create_zip(request, ranking, entropy, ids):
     ranking_filepath = settings.MEDIA_ROOT + "ranking.csv"
     entropy_filepath = settings.MEDIA_ROOT + "entropy.csv"
-    zip_filepath = settings.MEDIA_ROOT + "DeSigNate_Groups_" + ids + ".zip"
+    zip_filepath = settings.MEDIA_ROOT + "DeSigNate_Groups_" + time.asctime().replace(' ', '_').replace(':', '_') + '_' + request.session.session_key + ".zip"
 
     write_csv_file(ranking_filepath, ["position", "discriminative_power",
         "query_rank", "reference_rank"], ranking)
