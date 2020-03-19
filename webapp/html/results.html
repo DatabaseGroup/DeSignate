@@ -14,14 +14,14 @@
   </td>
   </table>
   <span class="headerLine"></span>
-  <table style="table-layout: fixed; text-align: center">
-    <td style="width: 33.3%; text-align: left"><a class="results" style="margin-left: 0px;">Classification</a><div class="toolTip">?<span class="toolTip" style="top: -4px; min-width: 600px;">Two types of signature characters are distinguished: (1) binary: the character state of the reference group is uniform but different from the character state in the query group; (2) asymmetric (single and combined): the character states of the reference group are not uniform but different from the character state in the query group. Noisy characters comprise at least one character state in the reference group which is identical to the uniform character state in the query group.</span></div></td>
+  <table style="table-layout: fixed; text-align: center; border-collapse:collapse">
+    <td style="width: 33.3%; text-align: left"><a class="results" style="margin-left: 0px; left: 0">Classification</a><div class="toolTip">?<span class="toolTip" style="top: -4px; min-width: 600px;">Two types of signature characters are distinguished: (1) binary: the character states of the reference group are uniform but different from the character state in the query group; (2) asymmetric (individual and combined): the character states of the reference group are not uniform but different from the character state in the query group. Noisy characters comprise at least one character state in the reference group which is identical to the uniform character state in the query group.</span></div></td>
     <td style="width: 33.3%">
       <a style="font-variant: small-caps; color: #b2597c; font-size: 20px"><b>Results</b></a>
     </td>
     <td style="width: 33.3%">
       {% if ids %}
-        <div class="toolTipLeft" style="display: inline; float:right;">?<span class="toolTipLeft" style="float:right; right:25px">Compressed file (*.zip) containing two tables in csv file format. Table 1 (entropy.csv) lists the entropy and moving average values for each alignment position. Table 2 (ranking.csv) provides a ranking of all alignment positions including the vector metrics (discriminative power, query rank, and reference rank) and the classification (binary, asymmetric, and noisy).</span></div><a class="functionButton" href="{% url 'download_zip' %}" style="display:inline;"> &#128190; Download Results</a>
+        <div class="toolTipLeft" style="display: inline; float:right;">?<span class="toolTipLeft" style="float:right;right:25px">Compressed file (*.zip) containing two tables in csv file format. Table 1 (entropy.csv) lists the entropy and moving average values for each alignment position. Table 2 (ranking.csv) provides a ranking of all alignment positions including the vector metrics (discriminative power, query rank, and reference rank) and the classification (binary, asymmetric, and noisy).</span></div><a class="functionButton" href="{% url 'download_zip' %}" style="display:inline;margin-right:2px"> &#128190; Download Results</a>
       {% endif %}
       <a href="{% url 'home' %}" class="functionButton">&#8635; Restart Analysis</a>
     </td>
@@ -84,7 +84,7 @@
       <a style="margin-left: 20px; color: #a2a8ad;">Noisy: {{ diversity_list.2|length }}</a>
     </div>
     <div style="display: block">
-      <a class="results" style="margin-left: 0px;">Signature Bar</a><div class="toolTip">?<span class="toolTip">The signature bar displays the positions of classified characters in the alignment by color-coded bars and arrowheads. Mouse-over the arrowheads to show the character position and the character state of the query group.</span></div>
+      <a class="results" style="margin-left: 0px;">Signature Bar</a><div class="toolTip">?<span class="toolTip">The signature bar displays the positions of binary, asymmetric and noisy characters in the alignment by color-coded bars and arrowheads. Mouse-over the arrowheads to show the character position and the character state of the query group.</span></div>
       <div style="float: right">
         <a>Filter:</a>
         <div id="filter0" onclick="filter('binary', diversity_list)" type="button" class="filterButton"><a style="color: #2ad21b; margin-left: 8px">&#x25be; Binary</a></div></s>
