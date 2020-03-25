@@ -196,7 +196,7 @@
     return tree;
   };
 
-  var newick_tree = parser("{{ newickTree }}");
+  var newick_tree = parser("{{ newickTree|safe }}");
 
   max_depth = 0;
   num_leafs = 0;

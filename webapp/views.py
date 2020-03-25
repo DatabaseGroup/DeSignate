@@ -129,7 +129,7 @@ def file_input(request):
                 temp.close()
 
             # read newick file as string
-            request.session['newick_tree'] = tree_file.splitlines()
+            request.session['newick_tree'] = tree_file
 
             # assign preorder id
             request.session['phylo_tree'] = assign_pre_id_to_inner_nodes(request.session.get('phylo_tree'))
@@ -213,9 +213,10 @@ def tree(request):
         # get number of leafs for width calc and depth for height calc
         num_leafs = len(get_all_terminals_of_inner_node(request.session.get('phylo_tree'), '0'))
         depth = get_depth(request.session.get('phylo_tree'))
-
-        return render(request, 'tree.html', {'newickTree': request.session.get('newick_tree'), 'numLeafs': num_leafs, 'depth': depth})
-
+        
+        
+        return render(request, 'tree.html', {'newickTree': request.session.get('newick_tree').decode("utf-8"), 'numLeafs': num_leafs, 'depth': depth})
+   
     # this error message appears when the user jumps directly to tree without
     # uploading any file whatsoever
     except AttributeError as e:
