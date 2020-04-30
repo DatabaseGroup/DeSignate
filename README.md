@@ -1,10 +1,10 @@
-# DeSigNate
+# DeSignate
 
 
 ## Tool description
 
 ### Detecting Signature Nucleotides for Taxon Diagnoses
-DeSigNate is an innovative tool for detecting diagnostic nucleotide positions for taxon diagnoses. The analysis is based on a novel representation of the gene sequence data, which enables a ranking of all positions according to their diagnostic relevance and a classification of the nucleotides. DeSigNate is also able to detect diagnostic combinations of nucleotides. The tool guides the user step-by-step through the analysis and presents the results without need to post-process the output data.
+DeSignate is an innovative tool for detecting diagnostic nucleotide positions for taxon diagnoses. The analysis is based on a novel representation of the gene sequence data, which enables a ranking of all positions according to their diagnostic relevance and a classification of the nucleotides. DeSignate is also able to detect diagnostic combinations of nucleotides. The tool guides the user step-by-step through the analysis and presents the results without need to post-process the output data.
 
 ### Which nucleotides are suitable for taxon diagnoses?
 In taxon diagnoses, only nucleotides that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature nucleotides are distinguished:
@@ -12,18 +12,18 @@ In taxon diagnoses, only nucleotides that unambiguously distinguish the query fr
 2. at asymmetric positions the nucleotides of the reference group are not uniform but different from the nucleotide in the query group.
 
 
-If you want to access the tool without cloning the respository, we host a publicly available server which runs the web-interface of DeSigNate at https://designate.dbresearch.uni-salzburg.at/.
+If you want to access the tool without cloning the respository, we host a publicly available server which runs the web-interface of DeSignate at https://designate.dbresearch.uni-salzburg.at/.
 
 
 ## Paper and Citation
-The scientific manuscript of this work is currently under revision. Links to the publication will be added shortly.
+The scientific manuscript of this tool was published at BMC Bioinformatics. The paper is open access and can be found at https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-3498-6. Please cite this article as described on the bottom of the BMC Bioinformatics website.
 
 
 ## Usage
 
-### Use DeSigNate via command-line
+### Use DeSignate via command-line
 
-DeSigNate can be used as a fully functional command-line interface independent of the web-interface. Hence, the tool runs without installing Django and does not use Javascript libraries; however, Python 3 has to be installed.
+DeSignate can be used as a fully functional command-line interface independent of the web-interface. Hence, the tool runs without installing Django and does not use Javascript libraries; however, Python 3 has to be installed.
 
 To see the full list of available command-line parameters, execute the following command within the webapp directory:
 ```
@@ -38,9 +38,9 @@ In the following example, the query group contains all species of the subtree wi
 python3 designate.py --alignment <path_to_alignment_file> --phylotree <path_to_tree_file> --reference_group_id 5 --query_group_id 3 --signature_nucleotides --two_pos 5 --shannon_entropy
 ```
 
-### Use DeSigNate via web-interface
+### Use DeSignate via web-interface
 
-Next to the command-line interface, this repository contains all the data needed to run web-interface of this tool locally. In order to do that, Django (Version 2.2.4) must be installed. The local server can be started with the following command in the root directory of DeSigNate:
+Next to the command-line interface, this repository contains all the data needed to run web-interface of this tool locally. In order to do that, Django (Version 2.2.4) must be installed. The local server can be started with the following command in the root directory of DeSignate:
 ```
 python3 manage.py runserver
 ```
