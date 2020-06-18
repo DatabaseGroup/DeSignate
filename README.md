@@ -3,16 +3,16 @@
 
 ## Tool description
 
-### Detecting Signature Nucleotides for Taxon Diagnoses
+### Detecting Signature Characters for Taxon Diagnoses
 DeSignate is an innovative tool for detecting diagnostic nucleotide positions for taxon diagnoses. The analysis is based on a novel representation of the gene sequence data, which enables a ranking of all positions according to their diagnostic relevance and a classification of the nucleotides. DeSignate is also able to detect diagnostic combinations of nucleotides. The tool guides the user step-by-step through the analysis and presents the results without need to post-process the output data.
 
 ### Which nucleotides are suitable for taxon diagnoses?
-In taxon diagnoses, only nucleotides that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature nucleotides are distinguished:
+In taxon diagnoses, only nucleotides that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature characters are distinguished:
 1. at binary positions the nucleotides of the reference group are uniform but different from the nucleotide in the query group
 2. at asymmetric positions the nucleotides of the reference group are not uniform but different from the nucleotide in the query group.
 
 
-If you want to access the tool without cloning the respository, we host a publicly available server which runs the web-interface of DeSignate at https://designate.dbresearch.uni-salzburg.at/.
+If you want to access the tool without cloning the repository, we host a publicly available server which runs the web-interface of DeSignate at https://designate.dbresearch.uni-salzburg.at/.
 
 
 ## Paper and Citation
@@ -33,7 +33,7 @@ Using the command-line interface, the query and the reference group are determin
 ```
 python3 designate.py --phylotree <path_to_tree_file> --print_tree
 ```
-In the following example, the query group contains all species of the subtree with the preorder ID 3 (resp. 5 for the reference group). With this configuration, individual and combined signature nucleotides (k-window: k = 5) are identified and the entropy is calculated.
+In the following example, the query group contains all species of the subtree with the preorder ID 3 (resp. 5 for the reference group). With this configuration, individual and combined signature characters (k-window: k = 5) are identified and the entropy is calculated.
 ```
 python3 designate.py --alignment <path_to_alignment_file> --phylotree <path_to_tree_file> --reference_group_id 5 --query_group_id 3 --signature_nucleotides --two_pos 5 --shannon_entropy
 ```
