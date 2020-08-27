@@ -35,7 +35,7 @@ python3 designate.py --phylotree <path_to_tree_file> --print_tree
 ```
 In the following example, the query group contains all species of the subtree with the preorder ID 3 (resp. 5 for the reference group). With this configuration, individual and combined signature characters (k-window: k = 5) are identified and the entropy is calculated.
 ```
-python3 designate.py --alignment <path_to_alignment_file> --phylotree <path_to_tree_file> --reference_group_id 5 --query_group_id 3 --signature_nucleotides --two_pos 5 --shannon_entropy
+python3 designate.py --alignment <path_to_alignment_file> --phylotree <path_to_tree_file> --reference_group_id 5 --query_group_id 3 --signature_characters --k_window 5 --shannon_entropy
 ```
 
 ### Use DeSignate via web-interface
