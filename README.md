@@ -4,12 +4,12 @@
 ## Tool description
 
 ### Detecting Signature Characters for Taxon Diagnoses
-DeSignate is an innovative tool for detecting diagnostic nucleotide positions for taxon diagnoses. The analysis is based on a novel representation of the gene sequence data, which enables a ranking of all positions according to their diagnostic relevance and a classification of the nucleotides. DeSignate is also able to detect diagnostic combinations of nucleotides. The tool guides the user step-by-step through the analysis and presents the results without need to post-process the output data.
+DeSignate is an innovative tool for detecting diagnostic character positions for taxon diagnoses. The analysis is based on a novel representation of the gene sequence data, which enables a ranking of all positions according to their diagnostic relevance and a classification of the characters. DeSignate is also able to detect diagnostic combinations of characters. The tool guides the user step-by-step through the analysis and presents the results without need to post-process the output data.
 
-### Which nucleotides are suitable for taxon diagnoses?
-In taxon diagnoses, only nucleotides that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature characters are distinguished:
-1. at binary positions the nucleotides of the reference group are uniform but different from the nucleotide in the query group
-2. at asymmetric positions the nucleotides of the reference group are not uniform but different from the nucleotide in the query group.
+### Which characters are suitable for taxon diagnoses?
+In taxon diagnoses, only characters that unambiguously distinguish the query from the reference group are of interest, i.e., they are uniform at homologous alignment positions in the query group. Two types of signature characters are distinguished:
+1. at binary positions, the characters of the reference group are uniform but different from the character in the query group.
+2. at asymmetric positions, the characters of the reference group are not uniform but different from the character in the query group.
 
 
 If you want to access the tool without cloning the repository, we host a publicly available server which runs the web-interface of DeSignate at https://designate.dbresearch.uni-salzburg.at/.
