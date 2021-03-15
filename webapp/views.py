@@ -26,6 +26,7 @@ from django.http import HttpResponseRedirect
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
+from itertools import zip_longest
 import json
 
 # import designate.py
@@ -348,6 +349,10 @@ def results(request):
         ids_key = str(str(request.session.get('id0')) + "_" + str(request.session.get('id1')) + "_" + request.session.session_key)
 
         request.session['ids_key'] = ids_key
+
+        for x in ranking:
+            x.append(round(entropy_list[x[0]-1],4))
+            x.append(round(average_list[x[0]-1],4))
 
         return render(request, 'results.html', {'alignment_reference': alignments_ref_group,
                 'alignment_query': alignments_query_group, 'entropy_list':entropy_list,

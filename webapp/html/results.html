@@ -165,7 +165,7 @@
         </div>
       </div>
 
-      <div style="display: flex; max-height: 50vh;top: 100px; min-height: 10px;">
+      <div style="display: flex; max-height: 50vh;top: 100px; min-height: 10px">
         <div style="position: absolute; margin-left: 10px">
           <a class="results">Diagnostic Relevance Ranking</a><div class="toolTipLeft">?<span class="toolTipLeft">Ranking of alignment positions based on discriminative power, query rank, and reference rank. Positions relevant for taxon diagnoses are listed first and their uniform state (query group) or predominant state (reference group) displayed next to their rank in brackets.</span></div>
         </div>
@@ -177,7 +177,9 @@
                  <th>Position</th>
                  <th>d-power</th>
                  <th>q-rank</th>
-                 <th>r-rank</th>
+                 <th style="min-width: 50px">r-rank </th>
+                 <th>Entropy</th>
+                 <th>Moving Avg.</th>
                </tr>
              </thead>
              <tbody>
@@ -188,21 +190,29 @@
                       <td  class="rankBinary">{{ obj.1|floatformat:2 }}</td>
                       <td  class="rankBinary">{{ obj.2 }}</td>
                       <td  class="rankBinary">{{ obj.3 }}</td>
+                      <td  class="rankBinary">{{ obj.5 }}</td>
+                      <td  class="rankBinary">{{ obj.6 }}</td>
                     {% elif obj.4 == 'asymmetric' %}
                       <td  class="rankAsymmetric">{{ obj.0 }}</td>
                       <td  class="rankAsymmetric">{{ obj.1|floatformat:2 }}</td>
                       <td  class="rankAsymmetric">{{ obj.2 }}</td>
                       <td  class="rankAsymmetric">{{ obj.3 }}</td>
+                      <td  class="rankAsymmetric">{{ obj.5 }}</td>
+                      <td  class="rankAsymmetric">{{ obj.6 }}</td>
                     {% elif obj.4 == 'noisy' %}
                       <td  class="rankNoisy">{{ obj.0 }}</td>
                       <td  class="rankNoisy">{{ obj.1|floatformat:2 }}</td>
                       <td  class="rankNoisy">{{ obj.2 }}</td>
                       <td  class="rankNoisy">{{ obj.3 }}</td>
+                      <td  class="rankNoisy">{{ obj.5 }}</td>
+                      <td  class="rankNoisy">{{ obj.6 }}</td>
                     {% else %}
                       <td >{{ obj.0 }}</td>
                       <td >{{ obj.1|floatformat:2 }}</td>
                       <td >{{ obj.2 }}</td>
                       <td >{{ obj.3 }}</td>
+                      <td >{{ obj.4 }}</td>
+                      <td >{{ obj.5 }}</td>
                     {% endif %}
                   </tr>
                 {% endfor %}
