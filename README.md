@@ -45,7 +45,6 @@ Next to the command-line interface, this repository contains all the data needed
 python3 manage.py runserver
 ```
 Now, the tool is available at localhost port 8000 (usually 127.0.0.1:8000).
-Be aware that Google Analytics will also track local usage of the web-interface.
 
 
 ## Used libraries
@@ -54,5 +53,4 @@ Be aware that Google Analytics will also track local usage of the web-interface.
 - **Phylogenetic tree library:** used to display the phylogenetic tree. (http://bl.ocks.org/jacksonhenry3/3083726)
 - **D3:** used by the Phylogenetic tree library to display the phylogenetic tree. (https://d3js.org/)
 - **newick.js:** used to parse the newick file. (https://github.com/jasondavies/newick.js)
-- **Google Analytics:** used to track the number of users. (https://analytics.google.com/analytics/web/)
 - **Cookie Consent:** used to display cookie message. (https://cookieconsent.osano.com/)
