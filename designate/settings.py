@@ -31,7 +31,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576
 
 # session settings
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # download path
