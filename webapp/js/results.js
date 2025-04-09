@@ -39,14 +39,14 @@ function placeBars(coordinates, diversity_list) {
         var bar = document.createElement("div");
         bar.className = "shannonBar";
         bar.style.background = bin_color;
-        bar.style.left = coordinates[x-1]._model.x + document.getElementById("graph").offsetLeft + "px";
+        bar.style.left = coordinates[x-1].x + document.getElementById("graph").offsetLeft + "px";
         bar.style.top = y + "px";
         bar.id = "binary " + i;
         document.getElementById("bar-graph").append(bar);
 
         var binary_marker = document.createElement("div");
         binary_marker.className = "binaryMarker";
-        binary_marker.style.left = (coordinates[x-1]._model.x - 3.0) + document.getElementById("graph").offsetLeft + "px";
+        binary_marker.style.left = (coordinates[x-1].x - 3.0) + document.getElementById("graph").offsetLeft + "px";
         binary_marker.style.top = (y - 12) + "px";
         binary_marker.id = "binary_marker " + i;
         binary_marker.title = x + " (" + nucleotide_list[0][i][1] + ")";
@@ -57,14 +57,14 @@ function placeBars(coordinates, diversity_list) {
         var bar = document.createElement("div");
         bar.className = "shannonBar";
         bar.style.background = asym_color;
-        bar.style.left = coordinates[x-1]._model.x + document.getElementById("graph").offsetLeft +"px";
+        bar.style.left = coordinates[x-1].x + document.getElementById("graph").offsetLeft +"px";
         bar.style.top = y + "px";
         bar.id = "asymmetric " + j;
         document.getElementById("bar-graph").append(bar);
 
         var asymmetric_marker = document.createElement("div");
         asymmetric_marker.className = "asymmetricMarker";
-        asymmetric_marker.style.left = (coordinates[x-1]._model.x - 3.0) + document.getElementById("graph").offsetLeft + "px";
+        asymmetric_marker.style.left = (coordinates[x-1].x - 3.0) + document.getElementById("graph").offsetLeft + "px";
         asymmetric_marker.style.top = (y - 12) + "px";
         asymmetric_marker.id = "asymmetric_marker " + j;
         asymmetric_marker.title = x + " (" + nucleotide_list[1][j][1] + ")";
@@ -75,7 +75,7 @@ function placeBars(coordinates, diversity_list) {
         var bar = document.createElement("div");
         bar.className = "shannonBar";
         bar.style.background = noisy_color;
-        bar.style.left = coordinates[x-1]._model.x + document.getElementById("graph").offsetLeft +"px";
+        bar.style.left = coordinates[x-1].x + document.getElementById("graph").offsetLeft +"px";
         bar.style.top = y + "px";
         bar.id = "noisy " + z;
         z++;
@@ -102,22 +102,22 @@ function updateBars(coordinates, diversity_list) {
       if(i < diversity_list[0].length && diversity_list[0][i] == x) {
         var bar = document.getElementById('binary ' + i);
         var binary_marker = document.getElementById("binary_marker " + i);
-        bar.style.left = coordinates[x]._model.x + document.getElementById("graph").offsetLeft + "px";
+        bar.style.left = coordinates[x].x + document.getElementById("graph").offsetLeft + "px";
         bar.style.top = y + "px";
-        binary_marker.style.left = (coordinates[x]._model.x + document.getElementById("graph").offsetLeft - 2.5) + "px";
+        binary_marker.style.left = (coordinates[x].x + document.getElementById("graph").offsetLeft - 2.5) + "px";
         i++;
       }
       if(j < diversity_list[1].length && diversity_list[1][j] == x) {
         var bar = document.getElementById('asymmetric ' + j);
         var asymmetric_marker = document.getElementById("asymmetric_marker " + j);
-        bar.style.left = coordinates[x]._model.x + document.getElementById("graph").offsetLeft + "px";
+        bar.style.left = coordinates[x].x + document.getElementById("graph").offsetLeft + "px";
         bar.style.top = y + "px";
-        asymmetric_marker.style.left = (coordinates[x]._model.x + document.getElementById("graph").offsetLeft - 2.5) + "px";
+        asymmetric_marker.style.left = (coordinates[x].x + document.getElementById("graph").offsetLeft - 2.5) + "px";
         j++;
       }
       if(z < diversity_list[2].length && diversity_list[2][z] == x) {
         var bar = document.getElementById('noisy ' + z);
-        bar.style.left = coordinates[x]._model.x + document.getElementById("graph").offsetLeft + "px";
+        bar.style.left = coordinates[x].x + document.getElementById("graph").offsetLeft + "px";
         bar.style.top = y + "px";
         z++;
       }
@@ -206,10 +206,10 @@ function placeIndexMarkers() {
 // calculate width and left of signature bar
 function updateSignaturebar(coordinates, index_list) {
   // point 0 coordinates are relative to canvas, so point coordinates + offset of canvas = x axis coordinates (where signaturebar begins)
-  document.getElementById('signaturebar').style.left = coordinates[0]._model.x + document.getElementById("graph").offsetLeft + "px";
+  document.getElementById('signaturebar').style.left = coordinates[0].x + document.getElementById("graph").offsetLeft + "px";
 
   // width = last point coordinates - first point coordinates
-  document.getElementById('signaturebar').style.width = coordinates[index_list.length - 1]._model.x - coordinates[0]._model.x + 'px';
+  document.getElementById('signaturebar').style.width = coordinates[index_list.length - 1].x - coordinates[0].x + 'px';
 }
 
 function updateGraph() {
@@ -327,13 +327,13 @@ var chart = new Chart(ctx, {
       // chart length/width = 8 to keep the chat small
       aspectRatio: 8,
       scales: {
-          // two x-axes. one is invisible and only there to display the data,
-          // the other one is to display the grid in 100 stepsize
-          xAxes: [
-            {
+        
+        x:
+          {
               position: 'top',
               id: 'primaryX',
-              gridLines: {
+              grid: {
+                //TODO: figure out how to seperate grid step size from ticks
                 display: false
               },
               type: 'category',
@@ -341,10 +341,9 @@ var chart = new Chart(ctx, {
                   autoSkip: false,
                   min: 0,
                   max: index_list.length,
-                  stepSize: 100,
                   // dont show any label
                   callback: function(value, index, values) {
-                    if (value % 100 === 0) {
+                    if (value % 50 === 0) {
                        return value;
                      } else {
                        return ' ';
@@ -355,22 +354,22 @@ var chart = new Chart(ctx, {
                   maxRotation: 0,
                   minRotation: 0
               }
-            },
-            // second x-axis to display the grid in stepsize 100
-            {
-              position: 'bottom',
-              id: 'secondaryX',
-              type: 'linear',
-              ticks: {
-                min: 1,
-                max: index_list.length,
-
-                // dont rotate the chart labels (default is 45deg rotated)
-                maxRotation: 0,
-                minRotation: 0
-              }
             }
-          ]
+            // // second x-axis to display the grid in stepsize 100
+            // {
+              // position: 'bottom',
+              // id: 'secondaryX',
+              // type: 'linear',
+              // ticks: {
+                // min: 1,
+                // max: index_list.length,
+
+                // // dont rotate the chart labels (default is 45deg rotated)
+                // maxRotation: 0,
+                // minRotation: 0
+              // }
+            // }
+         
         }
     }
   });
@@ -380,7 +379,7 @@ var chart = new Chart(ctx, {
 
   setTimeout(function() {
     // get data of points, e.g. x,y coordinates
-    var coordinates = chart.config.data.datasets[0]._meta[0].data;
+    var coordinates = chart.getDatasetMeta(0).data;
 
     // place bars to mark binary,asym. and noisy positions
     placeBars(coordinates, diversity_list);
@@ -397,7 +396,7 @@ var chart = new Chart(ctx, {
     // wait until graph resized before the signaturebar resize (900ms is enough)
     setTimeout(function(){
         // resize signaturebar
-        var coordinates = chart.config.data.datasets[0]._meta[0].data;
+        var coordinates = chart.getDatasetMeta(0).data;
         updateSignaturebar(coordinates, index_list);
         updateBars(coordinates, diversity_list);
         //updateGraph();

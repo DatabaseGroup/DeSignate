@@ -1,0 +1,22 @@
+{
+  "name": "designate",
+  "version": "1.0.0",
+  "description": "DeSignate is an innovative tool for detecting diagnostic character positions for taxon diagnoses.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DatabaseGroup/DeSignate.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DatabaseGroup/DeSignate/issues"
+  },
+  "homepage": "https://github.com/DatabaseGroup/DeSignate#readme",
+  "dependencies": {
+    "chart.js": "^4.4.8"
+  }
+}
