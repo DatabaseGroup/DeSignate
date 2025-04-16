@@ -40,7 +40,11 @@ python3 designate.py --alignment <path_to_alignment_file> --phylotree <path_to_t
 
 ### Use DeSignate via web-interface
 
-Next to the command-line interface, this repository contains all the data needed to run web-interface of this tool locally. In order to do that, Django (Version 2.2.4) must be installed. The local server can be started with the following command in the root directory of DeSignate:
+Next to the command-line interface, this repository contains all the data needed to run web-interface of this tool locally. In order to do that, Django (Version 2.2.4) must be installed. The required javascript libraries can be installed via the following command in the /webapp subdirectory:
+```
+npm install
+```
+After installing the javascript libraries, the local server can be started with the following command in the root directory of DeSignate:
 ```
 python3 manage.py runserver
 ```
